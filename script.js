@@ -23,3 +23,27 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft") updateLevel(level - 1);
     if (event.key === "ArrowRight") updateLevel(level + 1);
 });
+
+
+// APPLYING CSS TO ISLAND GRID
+
+function applyCSS() {
+  const css = document.getElementById("cssInput").value;
+  const garden = document.getElementById("island");
+
+  try {
+    island.style = ""; // Clear previous
+    const lines = css.split(";");
+
+    lines.forEach(line => {
+      if (line.trim() !== "") {
+        const [prop, value] = line.split(":");
+        if (prop && value) {
+          island.style.setProperty(prop.trim(), value.trim());
+        }
+      }
+    });
+  } catch (e) {
+    alert("Invalid CSS!");
+  }
+}

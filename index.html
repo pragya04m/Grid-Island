@@ -4,44 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Grid Garden</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>Grid Island</title>
 </head>
 <body>
     
-    <header class="header-content">
+    <div class="container">
 
-        <a href="#logo" class="logo">
-            <img 
-                src="images\grid-garden-logo.png"
-                alt="logoImage"
-                class="logo-icon"
-                loading="lazy"
-            />
-            <span class="logo-text">Grid Garden</span>
-        </a>
-
-        <div class="level-box">
-            <div class="arrow place-center" id="left-arrow">&#x276E;</div> <!-- Unicode left arrow -->
-            <div class="place-center" id="level-number">Level 1</div>
-            <div class="arrow place-center" id="right-arrow">&#x276F;</div> <!-- Unicode right arrow -->
-        </div>
-
-        <!-- <button class="menu-button">
-            <img src="images\Hamburger.svg" alt="menu-button" class="hamburger" />
-        </button> -->
-
-    </header>
-
-    <main>
         <div class="content-left">
+            <header class="header-content">
 
+                <a href="#logo" class="logo">
+                    <img 
+                        src="images/grid_island_logo_icon.png"
+                        alt="logoImage"
+                        class="logo-icon"
+                        loading="lazy"
+                    />
+                    <span class="logo-text">Grid Island</span>
+                </a>
+
+                <div class="level-box">
+                    <div class="arrow place-center" id="left-arrow">&#x276E;</div> <!-- Unicode left arrow -->
+                    <div class="place-center" id="level-number">Level 1</div>
+                    <div class="arrow place-center" id="right-arrow">&#x276F;</div> <!-- Unicode right arrow -->
+                </div>
+
+                <!-- <button class="menu-button">
+                    <img src="images\Hamburger.svg" alt="menu-button" class="hamburger" />
+                </button> -->
+
+            </header>
+
+            <main>
+                <div id="editor">
+                    <div class="question">
+                        <b>Instructions: </b>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat, numquam. Laudantium eligendi amet voluptatibus voluptatum esse voluptates! Exercitationem, nulla vitae?
+                    </div>
+                    <div class="code-card">
+                        <pre>
+#garden {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    grid-template-rows: 20% 20% 20% 20% 20%;
+}
+
+.water {
+    <input id="css-input" placeholder="Type your grid CSS property"></input>
+}                            
+</pre>
+                        <button id="apply-button" onclick="applyCSS()">Apply</button>
+                    </div>
+                </div>
+            </main>
         </div>
 
         <div class="content-right">
-            
+            <div id="grid-container">
+                <div id="island">
+                    <div class="sand cell"></div>
+                    <div class="sand cell"></div>
+                    <div class="cell"></div>
+                    <div class="ocean cell"></div>
+                    <div class="ocean cell"></div>
+
+                    <div class="sand cell"></div>
+                    <div class="sand cell"></div>
+                    <div class="cell"></div>
+                    <div class="ocean cell"></div>
+                    <div class="ocean cell"></div>
+
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                    <div class="cell"></div>
+                </div>
+            </div>
         </div>
 
-    </main>
+    </div>
 
     <script src="script.js">/*linked JS code here*/</script>
 
