@@ -8,7 +8,7 @@
     --blank-cell: #90d5cf;
     --accent-color: #fcb839;
     --red-accent: #d03f1e;
-    --text-color: rgb(255, 255, 255);
+    --text-color: white;
 }
 
 * {
@@ -24,6 +24,64 @@ body {
     text-align: center;
     background-color: var(--background-color);
 }
+
+/* CHANGING LEVEL UI */
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: opacity 0.5s ease;
+}
+
+#overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#result-card {
+  background: rgba(0, 0, 0, 0.75);
+  color: var(--text-color);
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  text-align: center;
+  font-size: 1.6rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+#result-card>p {
+    color: #6fcb23;
+}
+
+#retry-button {
+    background-color: #f02648;
+    box-shadow: 0.125rem 0.125rem 0.2rem 0.01rem rgba(25, 38, 85, 0.35);
+    border-radius: 0.2rem;
+    border: none;
+    width: 6rem;
+    height: 2.2rem;
+    color: var(--text-color);
+    margin: 0.4rem auto;
+    font-size: 1.2rem;
+}
+
+#retry-button:hover {
+    cursor: pointer;
+    background-color: #d91133;
+    box-shadow:2px 2px 5px 1px rgb(0, 0, 0);
+}
+
 
 /* HEADER */
 
@@ -137,7 +195,15 @@ header {
 }
 
 .question {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    color: azure;
+    font-family: 'Segoe UI';
+}
+
+.answer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
 .code-card {
@@ -175,7 +241,8 @@ pre {
     opacity: 1;
 }
 
-#apply-button {
+#apply-button,
+#next-button {
     background-color: var(--red-accent);
     border-radius: 0.2rem;
     margin-right: 1.4rem;
@@ -190,11 +257,18 @@ pre {
     box-shadow: 0.125rem 0.125rem 0.2rem 0.01rem rgba(25, 38, 85, 0.35);
 }
 
-#apply-button:hover {
+#apply-button:hover,
+#next-button:hover {
     cursor: pointer;
     background-color: #ed4613;
     animation: pulse 1.6s ease infinite;
 
+}
+
+#apply-button:active,
+#next-button:active {
+    animation: none;
+    background-color: var(--red-accent);
 }
 
 @keyframes pulse {
@@ -212,11 +286,22 @@ pre {
   }
 }
 
+#next-button {
+    background-color: var(--accent-color);
+    align-self: center;
+    width: 8rem;
+    font-size: 1.5rem;
+}
+
+#next-button:hover {
+    background-color: #ffa916;
+}
+
 
 /* ISLAND */
 
 .content-right {
-    height: 100vh;
+    height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -246,12 +331,13 @@ pre {
     display: grid;
     grid-template-columns: repeat(5,1fr);
     grid-template-rows: repeat(5,1fr);
-    width: 98%;
-    height: 98%;
+    width: 98.6%;
+    height: 98.6%;
     gap: 0.18rem;
     border-radius: 0.1rem;
     justify-items: center;
     align-items: center;
+    position: relative;
 }
 
 /* to hide any cells overflowing (more than grid size), if spanning cells used */
@@ -284,7 +370,7 @@ pre {
     border-right-color: #2daa9e;
     border-bottom-color: #2daa9e;
     box-shadow: 0.1rem 0.1rem 0.25rem rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    z-index: 0;
 }
 
 /* CELL OBJECTS FORMATTING */
@@ -305,7 +391,7 @@ pre {
     background-image: url("images/sand_bg2.png");
     background-size: auto 100%;
     background-repeat: repeat-x;
-    animation: slideBackground 6s linear infinite;
+    animation: slideBackground 12s linear infinite;
     width: 100%;
     height: 100%;
     z-index: 1;
@@ -317,13 +403,45 @@ pre {
     background-size: auto 100%;
     background-position: center;
     background-repeat: repeat-x;
-    animation: slideBackground 6s linear infinite;
+    animation: slideBackground 12s linear infinite;
     z-index: 1;
 }
 
-.big-fish {
+.sand:hover,
+.ocean:hover {
+    animation-duration: 8s;
+}
+
+@keyframes pulseSmall {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* .big-fish {
     width: 90%;
     z-index: 3;
+} */
+
+.big-fish {
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  transition: transform 0.5s ease;
+  z-index: 3;
+}
+
+.big-fish:hover {
+    animation: pulseSmall 1.5s ease infinite;
 }
 
 .crab {
@@ -338,6 +456,7 @@ pre {
 }
 
 .tree {
+    max-width: 100%;
     justify-self: start;
     z-index: 2;
 }

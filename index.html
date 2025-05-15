@@ -8,7 +8,7 @@
     <title>Grid Island</title>
 </head>
 <body>
-    
+
     <div class="container">
 
         <div class="content-left">
@@ -30,30 +30,33 @@
                     <div class="arrow place-center" id="right-arrow">&#x276F;</div> <!-- Unicode right arrow -->
                 </div>
 
-                <!-- <button class="menu-button">
-                    <img src="images\Hamburger.svg" alt="menu-button" class="hamburger" />
-                </button> -->
-
             </header>
 
             <main>
                 <div id="editor">
                     <div class="question">
-                        <b>Instructions: </b>Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat, numquam. Laudantium eligendi amet voluptatibus voluptatum esse voluptates! Exercitationem, nulla vitae?
+                        <b style="font-size: 1.4rem;">Instructions: </b>
+                        <span id="question-text">
+                            Save the fish from dying. <br>
+                            Use grid properties to move the fish to water cell.
+                        </span>
                     </div>
-                    <div class="code-card">
-                        <pre>
-#island {
-    display: grid;
-    grid-template-columns: 20% 20% 20% 20% 20%;
-    grid-template-rows: 20% 20% 20% 20% 20%;
-}
+                    <div class="answer">
+                        <div class="code-card">
+                            <pre>
+    #island {
+        display: grid;
+        grid-template-columns: 20% 20% 20% 20% 20%;
+        grid-template-rows: 20% 20% 20% 20% 20%;
+    }
 
-.fish {
-    <input id="css-input" placeholder="Type your grid CSS property"></input>
-}                            
-</pre>
-                        <button id="apply-button" onclick="applyCSS()">Apply</button>
+    .fish {
+        <input id="css-input" placeholder="Type your grid CSS property"></input>
+    }                            
+    </pre>
+                            <button id="apply-button">Apply</button>
+                        </div>
+                        <button id="next-button">Next</button>
                     </div>
                 </div>
             </main>
@@ -64,16 +67,16 @@
                 <div class="island-container">
                     <div id="island">
                         <!-- ROW 1 -->
-                        <div class="cell" style="grid-column: 2 / span 2; grid-row: 3 / span 2;">
-                            <img src="images/coconut_tree.png" class="tree" />
+                        <div class="cell" id="big-fish-cell" style="grid-column: 1; grid-row: 1;">
+                            
                         </div>
+                        <div class="ocean cell" style="grid-column: 5; grid-row: 1;"></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
-                        <div class="ocean cell" style="grid-column: 1 / span 3; grid-row: 1;"></div>
 
                         <!-- ROW 2 -->
-                        <div class="sand cell"  style="grid-column: 4 / span 2; grid-row: 2;"></div>
+                        <div class="cell" ></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
@@ -84,17 +87,11 @@
                         <div class="cell"></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
-                        <div class="cell" style="grid-column: 4; grid-row: 2;">
-                            <img src="images/crab.png" class="crab" alt="crab-image" loading="lazy" />
-                        </div>
-
+                        <div class="cell"></div>
+                        
                         <!-- ROW 4 -->
-                        <div class="cell" style="grid-column: 4; grid-row: 5;">
-                            <img src="images/small-fish.png" class="small-fish" alt="small-fish-image" loading="lazy" />
-                        </div>
-                        <div class="cell" style="grid-column: 2; grid-row: 5;">
-                            <img src="images/purple-fish-big.png" class="big-fish" alt="big-fish-image" loading="lazy" />
-                        </div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
@@ -105,12 +102,48 @@
                         <div class="cell"></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
+
+                        <!-- ROW extra -->
+                        <!-- <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div>
+                        <div class="cell"></div> -->
+
+                        <img src="images/purple-fish-big.png" style="top: 20%; left: 20%;" class="big-fish" alt="big-fish-image" loading="lazy" />
+
+                        <!-- <div class="cell" style="grid-column: 4; grid-row: 2;">
+                            <img src="images/crab.png" class="crab" alt="crab-image" loading="lazy" />
+                        </div> -->
+
+                        <!-- <div class="cell" style="grid-column: 4; grid-row: 5;">
+                            <img src="images/small-fish.png" class="small-fish" alt="small-fish-image" loading="lazy" />
+                        </div> -->
+                        <!-- <div class="cell" style="grid-column: 2; grid-row: 5;">
+                            <img src="images/purple-fish-big.png" class="big-fish" alt="big-fish-image" loading="lazy" />
+                        </div> -->
+                        <!-- <div class="cell tree-cell" style="grid-column: 2 / span 2; grid-row: 3 / span 2;">
+                            <img src="images/coconut_tree.png" class="tree" />
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
 
     </div>
+
+    <!-- LOAD NEXT LEVEL OVERLAY SCREEN -->
+
+    <div id="overlay" class="hidden">
+        <div id="result-card">
+            <h2 id="result-title"></h2>
+            <p id="result-message"></p>
+            <!-- <video width="640" height="360" autoplay loop>
+                <source src="images/loading.mp4" type="video/mp4">
+            </video> -->
+        </div>
+    </div>
+
 
     <script src="script.js">/*linked JS code here*/</script>
 
