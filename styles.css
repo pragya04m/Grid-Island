@@ -1,14 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;400;500;600;700&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 
 :root {
     --background-color: #192655;
     --dark-blue: #0b60b0;
     --primary-blue: #0cc0df;
     --primary-green: #2daa9e;
-    --accent-color: #fcb839;
-    --red-accent: #d64929;
     --blank-cell: #90d5cf;
+    --accent-color: #fcb839;
+    --red-accent: #d03f1e;
     --text-color: rgb(255, 255, 255);
 }
 
@@ -40,12 +39,13 @@ header {
 
 .logo {
     display: flex;
-    gap: 0.8rem;
+    gap: 1rem;
     align-items: center;
 }
 
 .logo-icon {
     height: 4rem;
+    transition: transform 0.1s ease-in;
 }
 
 .logo-text {
@@ -53,6 +53,13 @@ header {
     font-size: 3rem;
     font-weight: bold;
     color: var(--text-color);
+    transition: transform 0.1s ease-in;
+}
+
+.logo-text:hover,
+.logo-icon:hover {
+    transform: scale(1.02);
+    text-shadow: 0.15rem 0.12rem 0.5rem rgb(0, 0, 50);
 }
 
 .level-box {
@@ -75,7 +82,7 @@ header {
 }
 
 .level-box:hover {
-    box-shadow: 0.125rem 0.125rem 0.25rem 0.0625rem rgba(0,0,0,0.2);
+    box-shadow: 0.125rem 0.125rem 0.25rem 0.08rem rgba(0, 0, 0, 0.4);
 } 
 
 #left-arrow {
@@ -88,11 +95,20 @@ header {
     border-bottom-right-radius: 0.375rem;
 }
 
+.arrow {
+    transition: font-size 0.3s ease, background-color 0.2s ease, color 0.3s ease, text-shadow 0.3s ease;
+}
+
 .arrow:hover {
     cursor: pointer;
-    font-size: larger;
+    font-size: 1.5rem;
     color: white;
-    background-color: var(--primary-color);
+    background-color: #ffa916;
+    text-shadow: 0.1rem 0.1rem 0.3rem rgba(214, 135, 0, 0.5);
+}
+
+#level-number:hover {
+    text-shadow: 0.1rem 0.1rem 0.3rem rgba(214, 135, 0, 0.5);
 }
 
 /* MAIN CONTAINER */
@@ -117,7 +133,7 @@ header {
     margin-right: 2.5rem;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 5.5rem;
 }
 
 .question {
@@ -145,45 +161,82 @@ pre {
     border-radius: 0.325rem;
     font-family: monospace;
     font-size: 1.2rem;
-    padding-left: 0.2rem;
+    padding-left: 0.4rem;
     margin: 0.2rem;
-    color: #6c7772;
+    color: #475351;
+}
+
+#css-input::placeholder {
+    opacity: 0.5;
 }
 
 #css-input:focus {
-    outline: 0.175rem solid var(--primary-green);
+    outline: 0.1rem solid rgb(13, 22, 32);
+    opacity: 1;
 }
 
 #apply-button {
     background-color: var(--red-accent);
-    border: 0.08rem solid rgb(255, 64, 0);
     border-radius: 0.2rem;
     margin-right: 1.4rem;
     padding: 0.4rem;
     color: var(--text-color);
-    font-size: 1rem;
-    width:max-content;
+    font-size: 1.2rem;
+    font-weight: 450;
+    width: 5rem;
     align-self: end;
+    /* transform: translateY(0.1rem); */
+    border: none;
+    box-shadow: 0.125rem 0.125rem 0.2rem 0.01rem rgba(25, 38, 85, 0.35);
+}
+
+#apply-button:hover {
+    cursor: pointer;
+    background-color: #ed4613;
+    animation: pulse 1.6s ease infinite;
+
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 
-/* GARDEN */
+/* ISLAND */
 
 .content-right {
+    height: 95vh;
     display: flex;
     justify-content: center;
-    height: 95vh;
     align-items: center;
 }
 
 #grid-container {
-    /* background-color: var(--dark-brown); */
-    /* background-color: #80cbc4; */
-    /* background-color: #3dc2ec; */
     background-color: #2daa9e;
-    width: 45vw;
-    height: 45vw;
+    width: 41rem;
+    height: 41rem;
     border-radius: 0.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.island-container {
+    width: 97%;
+    height: 97%;
+    background-color: #75c6be;
+    border-radius: 0.2rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -193,47 +246,93 @@ pre {
     display: grid;
     grid-template-columns: repeat(5,1fr);
     grid-template-rows: repeat(5,1fr);
-    grid-template-areas: "";
-    width: 97%;
-    height: 97%;
-    /* gap: 0.125rem; */
+    width: 99%;
+    height: 99%;
+    gap: 0.18rem;
     border-radius: 0.1rem;
 }
 
+/* to hide any cells overflowing (more than grid size), if spanning cells used */
+/* #island > :nth-child(n+26) {
+  display: hidden;
+} */
+
+
 .cell {
-    border: 2px solid #75c6be;
+    border: 0.0625rem solid transparent;
+    border-right-color: var(--primary-green);
+    border-bottom-color: var(--primary-green);
+    border-top-color: #a6ded9;
+    border-left-color: #a6ded9;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* margin: 0.075rem; */
     overflow: hidden;
     background-color: #90d5cf;
+    transition: 
+        transform 0.3s ease,
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+}
+
+.cell:hover {
+    transform: perspective(37.5rem) translateZ(0.6rem);
+    border-width: 0.125rem;
+    border-right-color: #2daa9e;
+    border-bottom-color: #2daa9e;
+    box-shadow: 0.1rem 0.1rem 0.25rem rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+@keyframes slideBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
 }
 
 .sand {
-    background-image: url("images/5.png");
+    background-image: url("images/sand_bg2.png");
     background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-repeat: repeat-x;
+    animation: slideBackground 10s linear infinite;
+    width: 100%;
+    height: 100%;
 }
 
 .ocean {
     /* background-image: url("images/2.png"); */
-    background-image: url("images/ocean_bg_final.png");
+    background-image: url("images/ocean_bg_contrasted.png");
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
+    background-repeat: repeat-x;
+    animation: slideBackground 10s linear infinite;
+    grid-column: 1 / 4;
+    grid-row: 1;
 }
 
-.water {
-    background-color: #4aa4d8;
-    background-image: 
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.1) 0,
-      rgba(255, 255, 255, 0.15) 20px,
-      transparent 20px,
-      transparent 40px
-    ),
-    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent 70%);
+.big-fish {
+    width: 90%;
+}
+
+.crab {
+    width: 90%;
+    grid-column: 3;
+    grid-row: 3;
+}
+
+.small-fish {
+    width: 55%;
+    /* transform: scaleX(-1); */
+}
+
+.tree {
+    /* grid-column: 2 / span 2;
+    grid-row: 1 / span 3; */
+
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
 }
