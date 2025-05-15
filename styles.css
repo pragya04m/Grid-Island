@@ -171,7 +171,7 @@ pre {
 }
 
 #css-input:focus {
-    outline: 0.1rem solid rgb(13, 22, 32);
+    outline: 0.12rem solid var(--accent-color);
     opacity: 1;
 }
 
@@ -216,7 +216,7 @@ pre {
 /* ISLAND */
 
 .content-right {
-    height: 95vh;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -246,10 +246,12 @@ pre {
     display: grid;
     grid-template-columns: repeat(5,1fr);
     grid-template-rows: repeat(5,1fr);
-    width: 99%;
-    height: 99%;
+    width: 98%;
+    height: 98%;
     gap: 0.18rem;
     border-radius: 0.1rem;
+    justify-items: center;
+    align-items: center;
 }
 
 /* to hide any cells overflowing (more than grid size), if spanning cells used */
@@ -257,18 +259,19 @@ pre {
   display: hidden;
 } */
 
-
 .cell {
     border: 0.0625rem solid transparent;
     border-right-color: var(--primary-green);
     border-bottom-color: var(--primary-green);
     border-top-color: #a6ded9;
     border-left-color: #a6ded9;
-    display: flex;
+    display: grid;
     align-items: center;
-    justify-content: center;
+    justify-items: center;
     overflow: hidden;
     background-color: #90d5cf;
+    width:100%;
+    height:100%;
     transition: 
         transform 0.3s ease,
         box-shadow 0.3s ease,
@@ -284,55 +287,57 @@ pre {
     z-index: 1;
 }
 
+/* CELL OBJECTS FORMATTING */
+
 @keyframes slideBackground {
-  from {
+  0% {
     background-position: 0 0;
   }
-  to {
-    background-position: -100% 0;
+  50% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
   }
 }
 
 .sand {
     background-image: url("images/sand_bg2.png");
-    background-size: cover;
+    background-size: auto 100%;
     background-repeat: repeat-x;
-    animation: slideBackground 10s linear infinite;
+    animation: slideBackground 6s linear infinite;
     width: 100%;
     height: 100%;
+    z-index: 1;
 }
 
 .ocean {
     /* background-image: url("images/2.png"); */
     background-image: url("images/ocean_bg_contrasted.png");
-    background-size: cover;
+    background-size: auto 100%;
     background-position: center;
     background-repeat: repeat-x;
-    animation: slideBackground 10s linear infinite;
-    grid-column: 1 / 4;
-    grid-row: 1;
+    animation: slideBackground 6s linear infinite;
+    z-index: 1;
 }
 
 .big-fish {
     width: 90%;
+    z-index: 3;
 }
 
 .crab {
     width: 90%;
-    grid-column: 3;
-    grid-row: 3;
+    z-index: 3;
 }
 
 .small-fish {
     width: 55%;
+    z-index: 2;
     /* transform: scaleX(-1); */
 }
 
 .tree {
-    /* grid-column: 2 / span 2;
-    grid-row: 1 / span 3; */
-
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
+    justify-self: start;
+    z-index: 2;
 }

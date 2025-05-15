@@ -49,7 +49,7 @@
     grid-template-rows: 20% 20% 20% 20% 20%;
 }
 
-.water {
+.fish {
     <input id="css-input" placeholder="Type your grid CSS property"></input>
 }                            
 </pre>
@@ -64,7 +64,7 @@
                 <div class="island-container">
                     <div id="island">
                         <!-- ROW 1 -->
-                        <div class="cell">
+                        <div class="cell" style="grid-column: 2 / span 2; grid-row: 3 / span 2;">
                             <img src="images/coconut_tree.png" class="tree" />
                         </div>
                         <div class="cell"></div>
@@ -84,15 +84,15 @@
                         <div class="cell"></div>
                         <div class="cell"></div>
                         <div class="cell"></div>
-                        <div class="cell">
+                        <div class="cell" style="grid-column: 4; grid-row: 2;">
                             <img src="images/crab.png" class="crab" alt="crab-image" loading="lazy" />
                         </div>
 
                         <!-- ROW 4 -->
-                        <div class="cell">
+                        <div class="cell" style="grid-column: 4; grid-row: 5;">
                             <img src="images/small-fish.png" class="small-fish" alt="small-fish-image" loading="lazy" />
                         </div>
-                        <div class="cell">
+                        <div class="cell" style="grid-column: 2; grid-row: 5;">
                             <img src="images/purple-fish-big.png" class="big-fish" alt="big-fish-image" loading="lazy" />
                         </div>
                         <div class="cell"></div>
