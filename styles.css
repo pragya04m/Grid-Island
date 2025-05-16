@@ -325,6 +325,8 @@ pre {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-right: 0.7rem;
+    padding-bottom: 0.7rem;
 }
 
 #island {
@@ -337,7 +339,6 @@ pre {
     border-radius: 0.1rem;
     justify-items: center;
     align-items: center;
-    position: relative;
 }
 
 /* to hide any cells overflowing (more than grid size), if spanning cells used */
@@ -351,6 +352,7 @@ pre {
     border-bottom-color: var(--primary-green);
     border-top-color: #a6ded9;
     border-left-color: #a6ded9;
+    border-radius: 0.08rem;
 
     display: grid;
     align-items: center;
@@ -374,6 +376,14 @@ pre {
     border-right-color: #2daa9e;
     border-bottom-color: #2daa9e;
     box-shadow: 0.1rem 0.1rem 0.25rem rgba(0, 0, 0, 0.2);
+}
+
+.cell img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    user-select: none;
+    pointer-events: none;
 }
 
 /* CELL BACKGROUND FORMATTING */

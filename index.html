@@ -37,22 +37,22 @@
                     <div class="question">
                         <b style="font-size: 1.4rem;">Instructions: </b>
                         <span id="question-text">
-                            Save the fish from dying. <br>
-                            Use grid properties to move the fish to water cell.
+                            <!-- Save the fish from dying. <br>
+                            Use grid properties to move the fish to water cell. -->
                         </span>
                     </div>
                     <div class="answer">
                         <div class="code-card">
-                            <pre>
-    #island {
-        display: grid;
-        grid-template-columns: 20% 20% 20% 20% 20%;
-        grid-template-rows: 20% 20% 20% 20% 20%;
-    }
+                            <pre id="default-code">
+<!-- #island {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    grid-template-rows: 20% 20% 20% 20% 20%;
+}
 
-    .fish {
-        <input id="css-input" placeholder="Type your grid CSS property"></input>
-    }                            
+.fish {
+    <input id="css-input" placeholder="Type your grid CSS property"></input>
+}                             -->
     </pre>
                             <button id="apply-button">Apply</button>
                         </div>
@@ -72,12 +72,11 @@
                         <div class="cell" style="grid-column: 2; grid-row: 1;"></div>
                         <div class="cell" style="grid-column: 3; grid-row: 1;"></div>
                         <div class="cell" style="grid-column: 4; grid-row: 1;"></div>
-                        <div class="ocean cell" style="grid-column: 5; grid-row: 1;"></div>
+                        <div class="cell" style="grid-column: 5; grid-row: 1;"></div>
                         
                         <!-- ROW 2 -->
                         <div class="cell" style="grid-column: 1; grid-row: 2;"></div>
                         <div class="cell" style="grid-column: 2; grid-row: 2;"></div>
-                        <img src="images/purple-fish-big.png" class="big-fish cell" style="grid-column: 2; grid-row: 2;" alt="big-fish-image" loading="lazy" />
                         <div class="cell" style="grid-column: 3; grid-row: 2;"></div>
                         <div class="cell" style="grid-column: 4; grid-row: 2;"></div>
                         <div class="cell" style="grid-column: 5; grid-row: 2;"></div>
@@ -102,29 +101,6 @@
                         <div class="cell" style="grid-column: 3; grid-row: 5;"></div>
                         <div class="cell" style="grid-column: 4; grid-row: 5;"></div>
                         <div class="cell" style="grid-column: 5; grid-row: 5;"></div>
-
-                        <!-- ROW extra -->
-                        <!-- <div class="cell"></div>
-                        <div class="cell"></div>
-                        <div class="cell"></div>
-                        <div class="cell"></div>
-                        <div class="cell"></div> -->
-
-                        <!-- <img src="images/purple-fish-big.png" style="top: 20%; left: 20%;" class="big-fish" alt="big-fish-image" loading="lazy" /> -->
-
-                        <!-- <div class="cell" style="grid-column: 4; grid-row: 2;">
-                            <img src="images/crab.png" class="crab" alt="crab-image" loading="lazy" />
-                        </div> -->
-
-                        <!-- <div class="cell" style="grid-column: 4; grid-row: 5;">
-                            <img src="images/small-fish.png" class="small-fish" alt="small-fish-image" loading="lazy" />
-                        </div> -->
-                        <!-- <div class="cell" style="grid-column: 2; grid-row: 5;">
-                            <img src="images/purple-fish-big.png" class="big-fish" alt="big-fish-image" loading="lazy" />
-                        </div> -->
-                        <!-- <div class="cell tree-cell" style="grid-column: 2 / span 2; grid-row: 3 / span 2;">
-                            <img src="images/coconut_tree.png" class="tree" />
-                        </div> -->
                     </div>
                 </div>
             </div>
