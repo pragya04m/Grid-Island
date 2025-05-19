@@ -92,7 +92,6 @@ header {
     max-width: 50vw;
     /* margin: 0 0; */
     padding: 1rem;
-    /* background-color: #bdcf63; */
 }
 
 .logo {
@@ -187,17 +186,25 @@ header {
 #editor {
     color: var(--text-color);
     text-align: left;
-    margin-top: 3.5rem;
+    margin-top: 2.8rem;
     margin-right: 2.5rem;
     display: flex;
     flex-direction: column;
-    gap: 4.5rem;
+    gap: 3rem;
 }
 
 .question {
     font-size: 1.2rem;
     color: azure;
     font-family: 'Segoe UI';
+}
+
+#question-text b {
+    color: var(--accent-color);
+}
+
+#question-text i {
+    color: var(--blank-cell)
 }
 
 .answer {
@@ -215,12 +222,12 @@ header {
     gap: 1.2rem;
 }
 
-pre {
+code {
     font-family: monospace;
     font-size: 1.25rem;
 }
 
-#css-input {
+input {
     width: 30rem;
     height: 2rem;
     border: none;
@@ -404,21 +411,29 @@ pre {
 .sand {
     background-image: url("images/sand_bg2.png");
     background-size: auto 100%;
-    background-repeat: repeat-x;
     animation: slideBackground 12s linear infinite;
-    width: 100%;
-    height: 100%;
     z-index: 1;
     position: relative;
 }
 
 .ocean {
-    /* background-image: url("images/2.png"); */
     background-image: url("images/ocean_bg_contrasted.png");
     background-size: auto 100%;
-    background-position: center;
-    background-repeat: repeat-x;
     animation: slideBackground 12s linear infinite;
+    z-index: 1;
+    position: relative;
+}
+
+.sky {
+    background-image: url("images/sky.png");
+    background-size: auto 100%;
+    z-index: 1;
+    position: relative;
+}
+
+.sun {
+    background-image: url("images/sun.png");
+    background-size: auto 100%;
     z-index: 1;
     position: relative;
 }
@@ -444,25 +459,51 @@ pre {
 .big-fish,
 .yellow-fish,
 .small-fish,
-.crab {
-  /* position: absolute; */
-  /* width: 20%;
-  height: 20%; */
+.crab,
+.seagull {
   transition: transform 0.5s ease;
-  z-index: 3;
+  z-index: 5;
   position: relative;
 }
 
+.red-fish {
+    max-width: 85%;
+    height: auto;
+}
+
+.yellow-fish {
+    max-width: 65%;
+    height: auto;
+}
+
 .small-fish {
-    z-index: 2; 
+    max-width: 50%;
+    height: auto;
+    z-index: 3; 
     position: relative;
-    /* can be eaten */
+    /* so that it can be eaten (hidden behind)*/
+}
+
+.crab {
+    max-width: 75%;
+    height: auto;
 }
 
 .tree {
-    max-width: 100%;
-    z-index: 2;
+    max-width: 92%;
+    max-height: 100%;
+    z-index: 3;
     position: relative;
+}
+
+.lighthouse {
+    z-index: 3;
+    position: relative;
+}
+
+.seagull {
+    max-width: 70%;
+    height: auto;
 }
 
 .red-fish:hover,
@@ -470,6 +511,8 @@ pre {
 .yellow-fish:hover,
 .small-fish:hover,
 .crab:hover,
-.tree:hover {
+.tree:hover,
+.seagull:hover,
+.lighthouse:hover {
     animation: pulseSmall 1.5s ease infinite;
 }

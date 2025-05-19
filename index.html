@@ -35,7 +35,7 @@
             <main>
                 <div id="editor">
                     <div class="question">
-                        <b style="font-size: 1.4rem;">Instructions: </b>
+                        <b style="font-size: 1.4rem; color:var(--text-color);">Instructions: </b>
                         <span id="question-text">
                             <!-- Save the fish from dying. <br>
                             Use grid properties to move the element to some cell. -->
@@ -43,7 +43,7 @@
                     </div>
                     <div class="answer">
                         <div class="code-card">
-                            <pre id="default-code">
+                            <pre><code id="default-code">
 <!-- #island {
     display: grid;
     grid-template-columns: 20% 20% 20% 20% 20%;
@@ -53,7 +53,7 @@
 .element {
     <input id="css-input" placeholder="Type your grid CSS property"></input>
 }                             -->
-    </pre>
+    </code></pre>
                             <button id="apply-button">Apply</button>
                         </div>
                         <button id="next-button">Next</button>
