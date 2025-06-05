@@ -7,7 +7,7 @@
     --primary-green: #2daa9e;
     --blank-cell: #90d5cf;
     --accent-color: #fcb839;
-    --red-accent: #d03f1e;
+    --red-accent: #de3611;
     --text-color: white;
 }
 
@@ -204,7 +204,7 @@ header {
 }
 
 #question-text i {
-    color: var(--blank-cell)
+    color: var(--blank-cell);
 }
 
 .answer {
@@ -227,6 +227,21 @@ code {
     font-size: 1.25rem;
 }
 
+/* #hint-button {
+    height: 2rem;
+    width: 2rem;
+    background-color: var(--accent-color);
+    border-radius: 0.3rem;
+    border: none;
+    align-self: end;
+    margin-right: 1.4rem;
+}
+
+#bulb-icon {
+    height: 1.4rem;
+    width: auto;
+} */
+
 input {
     width: 30rem;
     height: 2rem;
@@ -239,12 +254,13 @@ input {
     color: #475351;
 }
 
-#css-input::placeholder {
+.css-input::placeholder {
     opacity: 0.5;
 }
 
-#css-input:focus {
-    outline: 0.12rem solid var(--accent-color);
+.css-input:focus {
+    outline: 0.12rem solid var(--background-color);
+    box-shadow: 0 0 0 0.2rem var(--blank-cell); /*outer outline*/
     opacity: 1;
 }
 
@@ -280,7 +296,7 @@ input {
 
 @keyframes pulse {
   0% {
-    transform: scale(1);
+    transform: scale(1.02);
     opacity: 1;
   }
   50% {
@@ -288,7 +304,7 @@ input {
     opacity: 0.95;
   }
   100% {
-    transform: scale(1);
+    transform: scale(1.02);
     opacity: 1;
   }
 }
@@ -337,8 +353,8 @@ input {
 
 #island {
     display: grid;
-    grid-template-columns: repeat(5,1fr);
-    grid-template-rows: repeat(5,1fr);
+    /* grid-template-columns: repeat(5,1fr);
+    grid-template-rows: repeat(5,1fr); */
     width: 98.6%;
     height: 98.6%;
     gap: 0.18rem;
@@ -348,11 +364,6 @@ input {
     justify-items: center;
     align-items: center;
 }
-
-/* to hide any cells overflowing (more than grid size), if spanning cells used */
-/* #island > :nth-child(n+26) {
-  display: hidden;
-} */
 
 .cell {
     border: 0.0625rem solid transparent;
@@ -460,25 +471,32 @@ input {
 .yellow-fish,
 .small-fish,
 .crab,
-.seagull {
+.seagull,
+.dolphin {
   transition: transform 0.5s ease;
   z-index: 5;
   position: relative;
 }
 
-.red-fish {
+.red-fish,
+.big-fish,
+.yellow-fish,
+.small-fish,
+.crab {
+    max-height: 85%;
     max-width: 85%;
     height: auto;
+    width: auto;
 }
 
 .yellow-fish {
     max-width: 65%;
-    height: auto;
+    /* height: auto; */
 }
 
 .small-fish {
     max-width: 50%;
-    height: auto;
+    /* height: auto; */
     z-index: 3; 
     position: relative;
     /* so that it can be eaten (hidden behind)*/
@@ -486,7 +504,7 @@ input {
 
 .crab {
     max-width: 75%;
-    height: auto;
+    /* height: auto; */
 }
 
 .tree {
@@ -506,6 +524,11 @@ input {
     height: auto;
 }
 
+.dolphin {
+    max-width: 70%;
+    height: auto;
+}
+
 .red-fish:hover,
 .big-fish:hover,
 .yellow-fish:hover,
@@ -513,6 +536,7 @@ input {
 .crab:hover,
 .tree:hover,
 .seagull:hover,
-.lighthouse:hover {
+.lighthouse:hover,
+.dolphin:hover {
     animation: pulseSmall 1.5s ease infinite;
 }
