@@ -255,10 +255,7 @@ const levelData = {
 `.island {
     <input id="css-input-island" class="css-input" placeholder="Make columns and rows"></input>
 }`,
-    gridTemplate: {
-      columns: "1fr",
-      rows: "1fr"
-    },
+    // gridTemplate: {},
     elements: [
       { type: "sand", col: 1, row: 1 },
       { type: "tree", col: 1, row: 1 }
@@ -278,13 +275,26 @@ const levelData = {
       columns: "1fr 1fr",
       rows: "1fr"
     },
-    elements: [
-
-    ],
+    elements: [    ],
     goal: [
       { type: "island", "grid-template-rows":"1fr 1fr 1fr 1fr" }
     ]
-  }
+  },
+
+  13: {
+    question: "The ocean wants flexibility.<br>Divide the shore into 3 rows, where the <b>middle rows is twice as wide</b> as the others. Make room for wide water flow in the center!",
+    code: 
+`.island {
+    <input id="css-input-island" class="css-input" placeholder="Divide the shores"></input>
+}`,
+    gridTemplate: {    },
+    elements: [
+      { type: "ocean", col: 1, row: 1 }
+    ],
+    goal: [
+      { type: "island", "grid-template-rows":"1fr 2fr 1fr" }
+    ]
+  },
   
 };
 
@@ -325,105 +335,114 @@ document.addEventListener("keydown", (event) => {
 const island = document.getElementById("island");
 let currentGoal = [];
 
+// --------------------------------------------------------------------
+// FUNCTION TO CREATE A NEW ELEMENT- USED WHEN LOADING LEVEL
+function createElement(el) {
+  let element;
+  const { type, col, row } = el;
+        
+  // Create appropriate element type
+  if (type === "sand" || type === "ocean" || type === "sky" || type === "sun") {
+    element = document.createElement("div");
+  } else {
+    element = document.createElement("img");
+    // Set image source based on type
+    if(type === "big-fish") element.src = "images/big-fish.png";
+    if(type === "red-fish") element.src = "images/red-fish.png";
+    if(type === "yellow-fish") element.src = "images/yellow-fish.png";
+    if(type === "small-fish") element.src = "images/small-fish.png";
+    if(type === "crab") element.src = "images/crab.png";
+    if(type === "tree") element.src = "images/tree.png";
+    if(type === "seagull") element.src = "images/seagull.png";
+    if(type === "dolphin") element.src = "images/dolphin.png";
+    if(type === "lighthouse") element.src = "images/lighthouse.png";
+    
+    // Reset CSS style for image
+    element.style.backgroundColor = "transparent";
+    element.style.border = "none";
+    element.style.boxShadow = "none";
+  }
+
+  // Set common properties
+  element.className = `${type} cell`;
+  element.style.gridColumn = col;
+  element.style.gridRow = row;
+
+  // Apply justify-self and align-self if present
+  if (el["justify-self"]) {
+    element.style.justifySelf = el["justify-self"];
+  }
+  if (el["align-self"]) {
+    element.style.alignSelf = el["align-self"];
+  }
+  
+  return element;
+}
+// --------------------------------------------------------------------
+
 function loadNextLevel(newLevel) {
-  console.log("Loading level:", newLevel);
-  console.log("Level data:", levelData[newLevel]);
+  const levelDataForNewLevel = levelData[newLevel];
+  if (!levelDataForNewLevel) {
+    console.error("Error: No level data found for level:", newLevel);
+    alert("Level doesn't exist!");
+    return;
+  }
 
   // Update header: level number in levelBox
   updateLevelBox(newLevel);
   const currentLevel = level;
-  console.log("Current level:", currentLevel);
+  console.log("Current level after updateLevelBox:", currentLevel);
 
   // Update content-left: question and editor data
-  document.getElementById("question-text").innerHTML = levelData[currentLevel].question;
-  document.getElementById("default-code").innerHTML = levelData[currentLevel].code;
+  const questionTextElement = document.getElementById("question-text");
+  const defaultCodeElement = document.getElementById("default-code");
+  
+  questionTextElement.innerHTML = levelData[currentLevel].question;
+  defaultCodeElement.innerHTML = levelData[currentLevel].code;
 
-  // --- Clear previous inline grid styles on the island ---
-  island.style.gridTemplateColumns = '';
-  island.style.gridTemplateRows = '';
-  island.style.justifyItems = '';
-  island.style.alignItems = '';
-  island.style.placeItems = '';
-  island.style.justifyContent = '';
-  island.style.alignContent = '';
-  island.style.placeContent = '';
-  island.style.gap = '';
-  island.style.gridGap = ''; // Clear both standard and prefixed gap properties
-  // Add any other relevant grid container properties that can be set by user input
-  // ---------------------------------------------------------
-
-  // Reset island grid template if not Level 11
-  /* // Removed this specific Level 11 check as broader clearing is added above
-  if (currentLevel !== 11) {
-    island.style.gridTemplateColumns = "";
-    island.style.gridTemplateRows = "";
+  // --- Clear ALL previous elements from the island ---
+  while (island.firstChild) {
+    island.removeChild(island.firstChild);
   }
-  */
 
-  // Update grid layout from levelData
-  if (levelData[currentLevel].gridTemplate) {
-    const grid = levelData[currentLevel].gridTemplate;
+  // Update grid layout from levelData and calculate dimensions
+  let colCount = 0;
+  let rowCount = 0;
+  const grid = levelData[currentLevel].gridTemplate;
+
+  if (grid && grid.columns) {
     island.style.gridTemplateColumns = grid.columns;
+  } else {
+    island.style.gridTemplateColumns = "1fr";
+  }
+
+  if (grid && grid.rows) {
     island.style.gridTemplateRows = grid.rows;
-    console.log("Grid template set from levelData:", grid);
+  } else {
+    island.style.gridTemplateRows = "1fr";
   }
 
-  // Clear old elements (fish, ocean, crab)
-  const oldElements = island.querySelectorAll(".yellow-fish, .red-fish, .big-fish, .crab, .small-fish, .tree, .seagull, .dolphin, .lighthouse, .sky, .sun, .ocean, .sand");
-  console.log("Clearing old elements:", oldElements.length);
-  oldElements.forEach(el => el.remove());
+  // Calculate row and column counts from the set grid template using the helper function
+  colCount = getGridDimensions(island.style.gridTemplateColumns);
+  rowCount = getGridDimensions(island.style.gridTemplateRows);
+  // console.log("Calculated grid dimensions:", { colCount, rowCount });
 
-  // --------------------------------------------------------------------
-  // FUNCTION TO CREATE A NEW SINGLE-CELL ELEMENT- USED WHEN LOADING LEVEL
-  function createElement(el) {
-    let element;
-    const { type, col, row } = el;
-          
-    // Create appropriate element type
-    if (type === "sand" || type === "ocean" || type === "sky" || type === "sun") {
-      element = document.createElement("div");
-    } else {
-      element = document.createElement("img");
-      // Set image source based on type
-      if(type === "big-fish") element.src = "images/big-fish.png";
-      if(type === "red-fish") element.src = "images/red-fish.png";
-      if(type === "yellow-fish") element.src = "images/yellow-fish.png";
-      if(type === "small-fish") element.src = "images/small-fish.png";
-      if(type === "crab") element.src = "images/crab.png";
-      if(type === "tree") element.src = "images/tree.png";
-      if(type === "seagull") element.src = "images/seagull.png";
-      if(type === "dolphin") element.src = "images/dolphin.png";
-      if(type === "lighthouse") element.src = "images/lighthouse.png";
+  // --- Dynamically create base grid cell elements ---
+  // console.log("Creating base grid cell elements.");
+  for (let row = 1; row <= rowCount; row++) {
+    for (let col = 1; col <= colCount; col++) {
+      const baseCell = document.createElement('div');
+      baseCell.className = 'cell';
+      baseCell.style.gridColumn = col;
+      baseCell.style.gridRow = row;
+      island.appendChild(baseCell);
+    }
+  }
+
+  // --- Add level-specific elements from levelData ---
+  if (levelData[currentLevel].elements) {
+    levelData[currentLevel].elements.forEach(el => {
       
-      // Reset CSS style for image
-      element.style.backgroundColor = "transparent";
-      element.style.border = "none";
-      element.style.boxShadow = "none";
-    }
-
-    // Set common properties
-    element.className = `${type} cell`;
-    element.style.gridColumn = col;
-    element.style.gridRow = row;
-
-    // Apply justify-self and align-self if present
-    if (el["justify-self"]) {
-      element.style.justifySelf = el["justify-self"];
-    }
-    if (el["align-self"]) {
-      element.style.alignSelf = el["align-self"];
-    }
-    
-    return element;
-  }
-  // --------------------------------------------------------------------
-
-  // Add new elements
-  levelData[currentLevel].elements.forEach(el => {
-    if (el.type === "yellow-fish" || el.type === "red-fish" || el.type === "big-fish" || el.type === "small-fish" || 
-      el.type === "crab" || el.type === "tree" || el.type === "seagull" || el.type === "dolphin" ||
-      el.type === "lighthouse" || el.type === "sky" || el.type === "sun" || el.type === "sand" || el.type === "ocean") {
-
       // Special case for tree and lighthouse with spanning
       if ((el.type === "tree" || el.type === "lighthouse") && el.colStart && el.colEnd && el.rowStart && el.rowEnd) {
         const img = document.createElement("img");
@@ -435,9 +454,18 @@ function loadNextLevel(newLevel) {
         img.style.boxShadow = "none";
         img.style.gridColumn = `${el.colStart} / ${el.colEnd}`;
         img.style.gridRow = `${el.rowStart} / ${el.rowEnd}`;
+        
+        // Apply justify-self and align-self if present
+        if (el["justify-self"]) {
+          img.style.justifySelf = el["justify-self"];
+        }
+        if (el["align-self"]) {
+          img.style.alignSelf = el["align-self"];
+        }
+        
         island.appendChild(img);
       }
-      // Case for spanning elements (except tree)
+      // Case for spanning elements (except tree and lighthouse)
       else if (el.colStart && el.colEnd && el.rowStart && el.rowEnd) {
         for (let col = el.colStart; col < el.colEnd; col++) {
           for (let row = el.rowStart; row < el.rowEnd; row++) {
@@ -449,51 +477,26 @@ function loadNextLevel(newLevel) {
       else {
         island.appendChild(createElement(el));
       }
-    }
-  });
+    });
+  } else {
+      console.log("No level-specific elements defined in levelData.");
+  }
 
   // Update win condition
   currentGoal = levelData[currentLevel].goal;
-  console.log("Current goal:", currentGoal);
-
-  // -----------------------------------------------------------------
-  // HANDLE GRID SIZE CHANGES
-  function updateGridSize() {
-    const cells = island.querySelectorAll(".cell");
-    // Parse the current grid's row and column sizes
-    const colCount = getColumnCount(island.style.gridTemplateColumns);
-    const rowCount = getRowCount(island.style.gridTemplateRows);
-
-    cells.forEach(cell => {
-      const col = parseInt(cell.style.gridColumn);
-      const row = parseInt(cell.style.gridRow);
-
-      if (col > colCount || row > rowCount) {
-        cell.style.display = "none";
-      } else {
-        cell.style.display = "grid";
-      }
-    });
-
-    // Helpers to count columns/rows from template string
-    function getColumnCount(colString) {
-      if (colString.includes("repeat")) {
-        return parseInt(colString.match(/repeat\((\d+)/)[1]);
-      }
-      return colString.trim().split(/\s+/).length;
-    }
-    function getRowCount(rowString) {
-      if (rowString.includes("repeat")) {
-        return parseInt(rowString.match(/repeat\((\d+)/)[1]);
-      }
-      return rowString.trim().split(/\s+/).length;
-    }
-  }
-  // -----------------------------------------------------------------
-
-  // Update grid size (if needed)
-  updateGridSize(level);
+  console.log("Current goal set:", currentGoal);
 }
+
+// Helper to get grid dimensions from template string
+const getGridDimensions = (template) => {
+  if (!template) return 0; // Handle empty template string
+  if (template.includes('repeat')) {
+    const match = template.match(/repeat\(\s*(\d+)[,\s]/);
+    return match ? parseInt(match[1]) : 0;
+  }
+   // Handle comma-separated values or space-separated values or null/empty/false values
+  return template.trim().split(/[\s,]+/).filter(Boolean).length;
+};
 
 
 
@@ -528,15 +531,17 @@ function applyCSS() {
   const applyProperty = (element, prop, value) => {
     const propertyName = toCamelCase(prop.trim());
     // For grid container properties, use direct assignment
-    if (prop.includes('items') || prop.includes('place')) {
-      console.log("Applying grid container property:", propertyName, value.trim(), "to", element.id);
-      element.style[propertyName] = value.trim();
-    } else {
-      // For grid item properties, use setProperty
-      console.log("Applying grid item property:", prop.trim(), value.trim(), "to", element.className);
+    if (element.id === 'island') {
+         element.style[propertyName] = value.trim();
+        // if template change
+         if (propertyName === 'gridTemplateColumns' || propertyName === 'gridTemplateRows') {
+           recreateGridCells();
+         }
+    } 
+    // For grid item properties, use setProperty
+    else {
       // Special handling for align-self and justify-self
       if (prop.includes('self')) {
-        console.log("Applying self property:", propertyName, value.trim());
         element.style[propertyName] = value.trim();
       } else {
         element.style.setProperty(prop.trim(), value.trim());
@@ -544,22 +549,121 @@ function applyCSS() {
     }
   };
 
-  // Helper function to create a cell
+  // Helper function to create a base cell
   const createCell = (col, row) => {
-    const cell = document.createElement('div');
-    cell.className = 'cell';
-    cell.style.gridColumn = col;
-    cell.style.gridRow = row;
-    return cell;
+    const baseCell = document.createElement('div');
+    baseCell.className = 'cell';
+    baseCell.style.gridColumn = col;
+    baseCell.style.gridRow = row;
+    return baseCell;
   };
 
-  // Helper function to get grid dimensions from template
-  const getGridDimensions = (template) => {
-    if (template.includes('repeat')) {
-      const match = template.match(/repeat\((\d+)/);
-      return match ? parseInt(match[1]) : 1;
+  // Helper function to recreate grid cells after template changes
+  const recreateGridCells = () => {
+    // Get current grid dimensions
+    const colCount = getGridDimensions(island.style.gridTemplateColumns);
+    const rowCount = getGridDimensions(island.style.gridTemplateRows);
+    
+    // Remove existing cells
+    const existingCells = island.querySelectorAll('.cell');
+    existingCells.forEach(cell => cell.remove());
+    
+    // Create new cells
+    for (let row = 1; row <= rowCount; row++) {
+      for (let col = 1; col <= colCount; col++) {
+        
+        // For Level 11, add sand and tree to all cells
+        if (level === 11) {
+          const sand = document.createElement('div');
+          sand.className = 'sand cell';
+          sand.style.gridColumn = col;
+          sand.style.gridRow = row;
+          
+          const tree = document.createElement('img');
+          tree.className = 'tree cell';
+          tree.src = 'images/tree.png';
+          tree.style.backgroundColor = 'transparent';
+          tree.style.border = 'none';
+          tree.style.boxShadow = 'none';
+          tree.style.gridColumn = col;
+          tree.style.gridRow = row;
+          // Explicitly remove these styles as they were re-introduced
+          tree.style.maxWidth = '';
+          tree.style.maxHeight = '';
+          tree.style.objectFit = '';
+          
+          island.appendChild(sand);
+          island.appendChild(tree);
+        } 
+
+        // For Level 12, add different fishes in each row - fish market
+        else if (level === 12) {
+          // First create and append the base cell
+          island.appendChild(createCell(col, row));
+
+          // Create fish element
+          const fish = document.createElement('img');
+          fish.style.backgroundColor = 'transparent';
+          fish.style.border = 'none';
+          fish.style.boxShadow = 'none';
+          fish.style.gridColumn = col;
+          fish.style.gridRow = row;
+          // Explicitly remove these styles as they were re-introduced
+          fish.style.maxWidth = '';
+          fish.style.maxHeight = '';
+          fish.style.objectFit = '';
+
+          // Assign different fish types based on row number
+          switch(row) {
+            case 1:
+              fish.className = 'red-fish';
+              fish.src = 'images/red-fish.png';
+              break;
+            case 2:
+              fish.className = 'yellow-fish';
+              fish.src = 'images/yellow-fish.png';
+              break;
+            case 3:
+              fish.className = 'big-fish';
+              fish.src = 'images/big-fish.png';
+              break;
+            case 4:
+              fish.className = 'small-fish';
+              fish.src = 'images/small-fish.png';
+              break;
+            default:
+              fish.className = 'fish';
+              fish.src = '';
+              break;
+          }
+          island.appendChild(fish);
+        }
+
+        // Level 13- add ocean and beach
+        else if(level===13) {
+          island.appendChild(createCell(col, row)); // Always add the base cell first
+
+          if (row === 1 || row === rowCount) { // First and last row for sand
+            const sand = document.createElement('div');
+            sand.className = 'sand cell';
+            sand.style.gridColumn = col;
+            sand.style.gridRow = row;
+            island.appendChild(sand);
+          } else if (row === 2) { // Middle row for ocean
+            const ocean = document.createElement('div');
+            ocean.className = 'ocean cell';
+            ocean.style.gridColumn = col;
+            ocean.style.gridRow = row;
+            island.appendChild(ocean);
+          }
+        }
+
+        // For all other levels- default action
+        else {
+          island.appendChild(createCell(col, row));
+        }
+      }
     }
-    return template.trim().split(/\s+/).length;
   };
 
   Object.entries(inputMap).forEach(([inputId, className]) => {
@@ -573,102 +677,14 @@ function applyCSS() {
     if (className === 'island') {
       try {
         const lines = cssValue.split(";");
-        let hasGridTemplate = false;
-        
         lines.forEach(line => {
           if (line.trim() !== "") {
             const [prop, value] = line.split(":");
             if (prop && value) {
-              if (prop.includes('grid-template')) {
-                hasGridTemplate = true;
-              }
               applyProperty(island, prop, value);
             }
           }
         });
-
-        // If grid template was changed, update cells- recreate new cells based on no. of rows and columns
-        if (hasGridTemplate) {
-          // Clear all cells
-          const existingCells = island.querySelectorAll('.cell');
-          existingCells.forEach(cell => cell.remove());
-
-          // Get new grid dimensions
-          const colCount = getGridDimensions(island.style.gridTemplateColumns);
-          const rowCount = getGridDimensions(island.style.gridTemplateRows);
-
-          // Create new cells
-          for (let col = 1; col <= colCount; col++) {
-            for (let row = 1; row <= rowCount; row++) {
-              const newCell = createCell(col, row);
-
-              // SPECIFIC HANDLING FOR DIFF LEVELS
-
-              // For Level 11, add sand and tree to all cells
-              if (level === 11) {
-                // Create sand element
-                const sand = document.createElement('div');
-                sand.className = 'sand cell';
-                sand.style.gridColumn = col;
-                sand.style.gridRow = row;
-                
-                // Create tree element
-                const tree = document.createElement('img');
-                tree.className = 'tree cell';
-                tree.src = 'images/tree.png';
-                tree.style.backgroundColor = 'transparent';
-                tree.style.border = 'none';
-                tree.style.boxShadow = 'none';
-                tree.style.gridColumn = col;
-                tree.style.gridRow = row;
-                
-                island.appendChild(sand);
-                island.appendChild(tree);
-              } 
-              // For Level 12, add different fishes in each row - fish market
-              else if (level === 12) {
-                // First create and append the base cell
-                island.appendChild(newCell);
-  
-                // Create fish element
-                const fish = document.createElement('img');
-                fish.style.backgroundColor = 'transparent';
-                fish.style.border = 'none';
-                fish.style.boxShadow = 'none';
-                fish.style.gridColumn = col;
-                fish.style.gridRow = row;
-                fish.style.maxWidth = '120px'; // Set a fixed max width
-                fish.style.maxHeight = '120px'; // Set a fixed max height
-  
-                // Assign different fish types based on row number
-                switch(row) {
-                  case 1:
-                    fish.className = 'red-fish';
-                    fish.src = 'images/red-fish.png';
-                    break;
-                  case 2:
-                    fish.className = 'yellow-fish';
-                    fish.src = 'images/yellow-fish.png';
-                    break;
-                  case 3:
-                    fish.className = 'big-fish';
-                    fish.src = 'images/big-fish.png';
-                    break;
-                  case 4:
-                    fish.className = 'small-fish';
-                    fish.src = 'images/small-fish.png';
-                    break;
-                }
-                  
-                island.appendChild(fish);
-              }
-              // For all other levels- default action
-              else {
-                island.appendChild(newCell);
-              }
-            }
-          }
-        }
       } catch (e) {
         alert("Invalid CSS!");
       }
@@ -678,10 +694,6 @@ function applyCSS() {
     // Handle grid items
     const targetElements = [...island.querySelectorAll(`.${className}.cell`)];
     targetElements.forEach(el => {
-      // Reset style
-      el.style.backgroundColor = "transparent";
-      el.style.border = "none";
-      el.style.boxShadow = "none";
       try {
         const lines = cssValue.split(";");
         lines.forEach(line => {
@@ -703,6 +715,7 @@ const apply_button = document.getElementById('apply-button');
 apply_button.addEventListener("click", applyCSS);
 
 
+
 // --------------------------------------------------------------------------------------------------------------
 // Check answer correct or not
 
@@ -712,13 +725,29 @@ function checkAnswer() {
   const message= document.getElementById("result-message");
   overlay.classList.remove("hidden");
 
-  // Collect all movable elements from DOM
+  // Collect all movable elements from DOM (elements that have a goal defined for them)
   const movableElements = island.querySelectorAll(".yellow-fish, .red-fish, .big-fish, .crab, .small-fish, .tree, .seagull, .dolphin, .lighthouse, .sky, .sun, .ocean, .sand");
 
   // Helper function to get cell sizes as numbers
   const getCellSizesNumeric = (template) => {
-    // Split by space and handle different size units
-    const sizes = template.split(' ').map(size => {
+    // Handle repeat() syntax
+    if (template.includes('repeat')) {
+      const match = template.match(/repeat\(\s*(\d+)[,\s]/);
+      if (match) {
+        const count = parseInt(match[1]);
+        const value = template.substring(match[0].length).trim();
+        if (!value || value === ')') return [];
+
+        // Recursively parse the value part (handles repeat(2, 1fr 1fr) or repeat(2, repeat(2, 1fr)))
+        const repeatedSizes = getCellSizesNumeric(value);
+        // Repeat the parsed sizes 'count' times
+        return Array(count).fill(repeatedSizes).flat();
+      }
+      // If repeat format is invalid but includes repeat
+      return [];
+    }
+
+    return template.trim().split(/[\s,]+/).filter(Boolean).map(size => {
 
       // Handle pixel values
       const pxMatch = size.match(/^(\d+\.?\d*)px$/);
@@ -742,217 +771,276 @@ function checkAnswer() {
 
       return null;
     }).filter(size => size !== null);
-
-    return sizes;
   };
 
-  // Check if all goal conditions are satisfied
-  const isCorrect = currentGoal.every(goal => {
+  // Helper function to normalize property values
+  const normalizeValue = (value) => {
+    return value.toLowerCase().trim();
+  };
 
-    // a) CHECKING GRID CONTAINER ("ISLAND" ELEMENT) PROPERTIES
-    if (goal.type === "island") {
-      const computedStyle = window.getComputedStyle(island);
+  let isCorrect;
 
-      // checking grid layout
-      if (goal["grid-template-columns"] || goal["grid-template-rows"]) { 
+  if (level === 10) {
+    let islandAlignItemsStretched = false;
+    let dolphinAlignSelfStretched = false;
 
-        let columnsMatch = true;
-        let rowsMatch = true;
-        let dimensionsMatch = true;
+    const computedIslandStyle = window.getComputedStyle(island);
 
-        // Check columns if specified in goal
-        if (goal["grid-template-columns"]) {
-            const computedColumns = getCellSizesNumeric(computedStyle.gridTemplateColumns);
-            const expectedColumnsSizes = getCellSizesNumeric(goal["grid-template-columns"]);
-
-            dimensionsMatch = computedColumns.length === expectedColumnsSizes.length;
-            columnsMatch = dimensionsMatch && computedColumns.every((size, index) => {
-              const expected = expectedColumnsSizes[index];
-              // If expected is fr and computed is px, compare the px value
-              if (expected.type === 'fr' && size.type === 'px') {
-                  // For 1fr units, all computed px values should be roughly equal.
-                  if (computedColumns.length > 0 && computedColumns[0].type === 'px') {
-                      // Compare the current computed column size (in px) with the first computed column size
-                      return Math.abs(size.value - computedColumns[0].value) < 1;
-                  }
-                  // Fallback or handle cases where computedColumns[0] is not px
-                  return false;
-              }
-              if (expected.type === 'px') {
-                return Math.abs(size.value - expected.value) < 0.5;
-              } else if (expected.type === 'fr') {
-                return size.type === 'fr' && Math.abs(size.value - expected.value) < 0.01;
-              } else if (expected.type === 'auto') {
-                return size.type === 'auto';
-              } else if (expected.type === 'percent') {
-                return size.type === 'percent' && Math.abs(size.value - expected.value) < 0.01;
-              }
-              return false;
-            });
-        }
-
-        // Check rows if specified in goal
-        if (goal["grid-template-rows"]) {
-            const computedRows = getCellSizesNumeric(computedStyle.gridTemplateRows);
-            const expectedRowsSizes = getCellSizesNumeric(goal["grid-template-rows"]);
-
-            // If columns were not checked, update dimensionsMatch based on rows
-            if (!goal["grid-template-columns"]) {
-                 dimensionsMatch = computedRows.length === expectedRowsSizes.length;
-            } else {
-                // If columns were checked, ensure row count also matches
-                dimensionsMatch = dimensionsMatch && (computedRows.length === expectedRowsSizes.length);
-            }
-
-            rowsMatch = dimensionsMatch && computedRows.every((size, index) => {
-              const expected = expectedRowsSizes[index];
-              // If expected is fr and computed is px, compare the px value
-              if (expected.type === 'fr' && size.type === 'px') {
-                  // For 1fr units, all computed px values should be roughly equal.
-                  if (computedRows.length > 0 && computedRows[0].type === 'px') {
-                      // Compare the current computed row size (in px) with the first computed row size
-                      return Math.abs(size.value - computedRows[0].value) < 1;
-                  }
-                  // Fallback or handle cases where computedRows[0] is not px
-                  return false;
-              }
-              // Original comparison for matching unit types
-              if (expected.type === 'px') {
-                return Math.abs(size.value - expected.value) < 0.5;
-              } else if (expected.type === 'fr') {
-                return size.type === 'fr' && Math.abs(size.value - expected.value) < 0.01;
-              } else if (expected.type === 'auto') {
-                return size.type === 'auto';
-              } else if (expected.type === 'percent') {
-                return size.type === 'percent' && Math.abs(size.value - expected.value) < 0.01;
-              }
-              
-              return false; // Default return if none of the above unit types match
-            });
-
-          }
-        if (dimensionsMatch && columnsMatch && rowsMatch) return true;
-      } 
-      
-      // Check for other island (position) properties
-      if (goal["justify-items"] || goal["align-items"] || goal["place-items"]) {
-        let justifyItemsMatch = true;
-        let alignItemsMatch = true;
-        let placeItemsMatch = true;
-
-        // Helper function to normalize property values
-        const normalizeValue = (value) => {
-          return value.toLowerCase().trim();
-        };
-
-        if (goal["justify-items"]) {
-          const computedValue = normalizeValue(computedStyle.justifyItems);
-          const goalValue = normalizeValue(goal["justify-items"]);
-          justifyItemsMatch = computedValue === goalValue;
-        }
-        if (goal["align-items"]) {
-          const computedValue = normalizeValue(computedStyle.alignItems);
-          const goalValue = normalizeValue(goal["align-items"]);
-          alignItemsMatch = computedValue === goalValue;
-        }
-        if (goal["place-items"]) {
-          const computedValue = normalizeValue(computedStyle.placeItems);
-          const goalValue = normalizeValue(goal["place-items"]);
-          placeItemsMatch = computedValue === goalValue;
-        }
-
-        if(justifyItemsMatch && alignItemsMatch && placeItemsMatch) return true;
-      }
+    // Check island's align-items property
+    if (normalizeValue(computedIslandStyle.alignItems) === 'stretch') {
+      islandAlignItemsStretched = true;
     }
 
-    // ----------------------------------------------------------------------------
-    // HANDLE GRID ITEMS CHECKING- This logic applies if the goal type is not 'island'
-    return Array.from(movableElements).some(el => {
-      const computedStyle = window.getComputedStyle(el);
-
-      // Get grid position values
-      const gridColStart = parseInt(computedStyle.gridColumnStart);
-      const gridColEnd = parseInt(computedStyle.gridColumnEnd);
-      const gridRowStart = parseInt(computedStyle.gridRowStart);
-      const gridRowEnd = parseInt(computedStyle.gridRowEnd);
-
-      const typeMatches = el.classList.contains(goal.type);
-
-      // Handle different matching strategies
-      let colMatches = true;
-      let rowMatches = true;
-
-      // MATCHING COLUMN
-      if (goal.colStart && goal.colEnd) {
-        const expectedSpan = goal.colEnd - goal.colStart;
-        let gridColStartNum = parseInt(computedStyle.gridColumnStart);
-        let gridColEndNum = parseInt(computedStyle.gridColumnEnd);
-        let actualSpan = gridColEndNum - gridColStartNum;
-        let computedEnd = gridColEndNum;
-
-        // If gridColEnd is not a number, try to extract span from string
-        if (isNaN(gridColEndNum)) {
-            // Try to match "span N" anywhere in the string
-            const match = computedStyle.gridColumnEnd.match(/span\s*(\d+)/);
-            if (match) {
-                actualSpan = parseInt(match[1]);
-                computedEnd = gridColStartNum + actualSpan;
-            }
-        }
-        colMatches = (gridColStartNum === goal.colStart &&
-            (gridColEndNum === goal.colEnd || actualSpan === expectedSpan || computedEnd === goal.colEnd))
-            ||
-            (gridColStartNum === goal.colEnd &&
-            (gridColEndNum === goal.colStart || actualSpan === expectedSpan || computedEnd === goal.colStart));
-            // because (level-6), end value can also be smaller than the start value
-      } else if (goal.col) {
-        colMatches = gridColStart === goal.col;
+    // Check if any dolphin has align-self: stretch
+    const dolphins = island.querySelectorAll(".dolphin.cell");
+    dolphins.forEach(dolphinEl => {
+      const computedDolphinStyle = window.getComputedStyle(dolphinEl);
+      if (computedDolphinStyle.alignSelf === 'stretch') {
+        dolphinAlignSelfStretched = true;
       }
-
-      // MATCHING ROW
-      if (goal.rowStart && goal.rowEnd) {
-        rowMatches = (gridRowStart === goal.rowStart &&
-            (gridRowEnd === goal.rowEnd || actualSpan === expectedSpan || computedEnd === goal.rowEnd))
-            ||
-            (gridRowStart === goal.rowEnd &&
-            (gridRowEnd === goal.rowStart || actualSpan === expectedSpan || computedEnd === goal.rowStart));
-      } else if (goal.row) {
-        rowMatches = gridRowStart === goal.row;
-      }
-
-      let justifyMatches = true;
-      let alignMatches = true;
-
-      if (goal["justify-self"]) {
-        justifyMatches = computedStyle.justifySelf === goal["justify-self"];
-      }
-      if (goal["align-self"]) {
-        alignMatches = computedStyle.alignSelf === goal["align-self"];
-      }
-
-      if(level >= 1 && level <= 6) return typeMatches && colMatches && rowMatches;
-      if(level >= 7 && level <= 10) {
-        // Special case for level 10 - check for either align-items on island or align-self on dolphin
-        if (level === 10) {
-          // Check if either condition is met:
-          const islandStyle = window.getComputedStyle(island);
-          const dolphinElements = island.querySelectorAll('.dolphin');
-          // 1. Island has align-items: stretch
-          const hasIslandAlignItems = islandStyle.alignItems === 'stretch';
-          // 2. Any dolphin has align-self: stretch
-          const hasDolphinAlignSelf = Array.from(dolphinElements).some(dolphin => {
-            const style = window.getComputedStyle(dolphin);
-            return style.alignSelf === 'stretch';
-          });
-          // Return true if either condition is met
-          return hasIslandAlignItems || hasDolphinAlignSelf;
-        }
-        return typeMatches && justifyMatches && alignMatches;
-      }
-
-      return false; // Default return if no specific level/item condition is met within the .some() loop
     });
-  });
+
+    isCorrect = islandAlignItemsStretched || dolphinAlignSelfStretched;
+
+  } else {
+
+    // Check if all goal conditions are satisfied
+    isCorrect = currentGoal.every(goal => {
+
+      // --- CHECKING GRID CONTAINER ("ISLAND" ELEMENT) GOALS ---
+      if (goal.type === "island") {
+        const computedStyle = window.getComputedStyle(island);
+
+        // checking grid layout properties (grid-template-columns/rows)
+        if (goal["grid-template-columns"] || goal["grid-template-rows"]) {
+
+          let columnsMatch = true;
+          let rowsMatch = true;
+          let dimensionsMatch = true;
+
+          // Check columns if specified in goal
+          if (goal["grid-template-columns"]) {
+              const computedColumns = getCellSizesNumeric(computedStyle.gridTemplateColumns);
+              const expectedColumnsSizes = getCellSizesNumeric(goal["grid-template-columns"]);
+
+              dimensionsMatch = computedColumns.length === expectedColumnsSizes.length;
+              columnsMatch = dimensionsMatch && computedColumns.every((size, index) => {
+                const expected = expectedColumnsSizes[index];
+                // Exceptional case- If expected is fr and computed is px, compare the px value should be equal
+                if (expected.type === 'fr' && size.type === 'px') {
+                    let oneFrEquivalentPx = 0;
+                    let foundBaseFr = false;
+                    for (let i = 0; i < expectedColumnsSizes.length; i++) {
+                        if (expectedColumnsSizes[i].type === 'fr' && computedColumns[i].type === 'px' && expectedColumnsSizes[i].value !== 0) {
+                            oneFrEquivalentPx = computedColumns[i].value / expectedColumnsSizes[i].value;
+                            foundBaseFr = true;
+                            break;
+                        }
+                    }
+                    if (!foundBaseFr) return false;
+                    return Math.abs(size.value - (expected.value * oneFrEquivalentPx)) < 1; // Tolerance of 1px
+                }
+                // Normal case- Comparison for matching unit types (px, fr, auto, percent)
+                if (expected.type === 'px') {
+                  return Math.abs(size.value - expected.value) < 0.5;
+                } else if (expected.type === 'fr') {
+                  return size.type === 'fr' && Math.abs(size.value - expected.value) < 0.01;
+                } else if (expected.type === 'auto') {
+                  return size.type === 'auto';
+                } else if (expected.type === 'percent') {
+                  return size.type === 'percent' && Math.abs(size.value - expected.value) < 0.01;
+                }
+                return false;
+              });
+          }
+
+          // Check rows if specified in goal
+          if (goal["grid-template-rows"]) {
+              const computedRows = getCellSizesNumeric(computedStyle.gridTemplateRows);
+              const expectedRowsSizes = getCellSizesNumeric(goal["grid-template-rows"]);
+
+              // row count should also match the already checked column dimensionsMatch, if column exists
+              dimensionsMatch = (goal["grid-template-columns"]) 
+                  ? (dimensionsMatch && (computedRows.length === expectedRowsSizes.length))
+                  : (computedRows.length === expectedRowsSizes.length);
+
+              rowsMatch = dimensionsMatch && computedRows.every((size, index) => {
+                const expected = expectedRowsSizes[index];
+
+                // Exceptional case
+                if (expected.type === 'fr' && size.type === 'px') {
+                    let oneFrEquivalentPx = 0;
+                    let foundBaseFr = false;
+                    for (let i = 0; i < expectedRowsSizes.length; i++) {
+                        if (expectedRowsSizes[i].type === 'fr' && computedRows[i].type === 'px' && expectedRowsSizes[i].value !== 0) {
+                            oneFrEquivalentPx = computedRows[i].value / expectedRowsSizes[i].value;
+                            foundBaseFr = true;
+                            break;
+                        }
+                    }
+                    if (!foundBaseFr) return false;
+
+                    return Math.abs(size.value - (expected.value * oneFrEquivalentPx)) < 1;
+                }
+                // Normal case
+                if (expected.type === 'px') {
+                  return Math.abs(size.value - expected.value) < 0.5;
+                } else if (expected.type === 'fr') {
+                  return size.type === 'fr' && Math.abs(size.value - expected.value) < 0.01;
+                } else if (expected.type === 'auto') {
+                  return size.type === 'auto';
+                } else if (expected.type === 'percent') {
+                  return size.type === 'percent' && Math.abs(size.value - expected.value) < 0.01;
+                }
+                return false;
+              });
+          }
+
+          // Return true only if all specified dimensions match
+          return dimensionsMatch && columnsMatch && rowsMatch;
+        }
+
+        // checking other island (position) properties
+        if (goal["justify-items"] || goal["align-items"] || goal["place-items"]) {
+          let justifyItemsMatch = true;
+          let alignItemsMatch = true;
+          let placeItemsMatch = true;
+
+          // Helper function to normalize property values
+          const normalizeValue = (value) => {
+            return value.toLowerCase().trim();
+          };
+
+          if (goal["justify-items"]) {
+            const computedValue = normalizeValue(computedStyle.justifyItems);
+            const goalValue = normalizeValue(goal["justify-items"]);
+            justifyItemsMatch = computedValue === goalValue;
+          }
+          if (goal["align-items"]) {
+            const computedValue = normalizeValue(computedStyle.alignItems);
+            const goalValue = normalizeValue(goal["align-items"]);
+            alignItemsMatch = computedValue === goalValue;
+          }
+          if (goal["place-items"]) {
+            const computedValue = normalizeValue(computedStyle.placeItems);
+            const goalValue = normalizeValue(goal["place-items"]);
+            placeItemsMatch = computedValue === goalValue;
+          }
+
+          return justifyItemsMatch && alignItemsMatch && placeItemsMatch;
+        }
+      }
+
+      // --- HANDLING GRID ITEMS (MOVABLE ELEMENTS) GOALS ---
+
+      return Array.from(movableElements).some(el => {
+        const computedStyle = window.getComputedStyle(el);
+
+        // Get grid position values
+        const gridColStart = parseInt(computedStyle.gridColumnStart) || 1;
+        const gridColEnd = parseInt(computedStyle.gridColumnEnd) || (gridColStart + 1);
+        const gridRowStart = parseInt(computedStyle.gridRowStart) || 1;
+        const gridRowEnd = parseInt(computedStyle.gridRowEnd) || (gridRowStart + 1);
+
+        const typeMatches = el.classList.contains(goal.type);
+
+        let colMatches = true;
+        let rowMatches = true;
+        let justifyMatches = true;
+        let alignMatches = true;
+
+        // MATCHING COLUMN
+        if (goal.colStart !== undefined && goal.colEnd !== undefined) {
+          const expectedSpan = goal.colEnd - goal.colStart;
+          let computedColStart = parseInt(computedStyle.gridColumnStart);
+          let computedColEnd = parseInt(computedStyle.gridColumnEnd);
+          let actualSpan = computedColEnd - computedColStart;
+
+          // Convert negative grid lines to positive for comparison if applicable
+          const islandComputedStyle = window.getComputedStyle(island);
+          const currentIslandColCount = getGridDimensions(islandComputedStyle.gridTemplateColumns);
+          if (computedColEnd < 0) {
+            computedColEnd = currentIslandColCount + (computedColEnd + 2);
+          }
+
+          // Attempt to handle 'span' keyword in computed style
+          if (isNaN(computedColEnd)) {
+              const spanMatch = computedStyle.gridColumnEnd.match(/span\s*(\d+)/);
+              if (spanMatch) {
+                  actualSpan = parseInt(spanMatch[1]);
+                  computedColEnd = computedColStart + actualSpan; // Calculate end based on start and span
+              }
+          }
+
+          // Check if the computed range matches the goal range, considering start/end can be swapped
+          colMatches = (computedColStart === goal.colStart && computedColEnd === goal.colEnd) ||
+                       (computedColStart === goal.colEnd && computedColEnd === goal.colStart) ||
+                       (computedColStart === goal.colStart && actualSpan === expectedSpan) ||
+                       (computedColStart === goal.colEnd && actualSpan === -expectedSpan); // Handle negative span
+
+        } else if (goal.col !== undefined) {
+          colMatches = gridColStart === goal.col;
+        }
+
+        // MATCHING ROW
+        if (goal.rowStart !== undefined && goal.rowEnd !== undefined) {
+           const expectedSpan = goal.rowEnd - goal.rowStart;
+           let computedRowStart = parseInt(computedStyle.gridRowStart);
+           let computedRowEnd = parseInt(computedStyle.gridRowEnd);
+           let actualSpan = computedRowEnd - computedRowStart;
+
+           // Convert negative grid lines to positive for comparison if applicable
+           const islandComputedStyle = window.getComputedStyle(island);
+           const currentIslandRowCount = getGridDimensions(islandComputedStyle.gridTemplateRows);
+
+           if (computedRowEnd < 0) {
+             computedRowEnd = currentIslandRowCount + (computedRowEnd + 2);
+           }
+
+           // Attempt to handle 'span' keyword in computed style
+           if (isNaN(computedRowEnd)) {
+               const spanMatch = computedStyle.gridRowEnd.match(/span\s*(\d+)/);
+               if (spanMatch) {
+                   actualSpan = parseInt(spanMatch[1]);
+                   computedRowEnd = computedRowStart + actualSpan; // Calculate end based on start and span
+               }
+           }
+
+          // Check if the computed range matches the goal range, considering start/end can be swapped
+          rowMatches = (computedRowStart === goal.rowStart && computedRowEnd === goal.rowEnd) ||
+                      (computedRowStart === goal.rowEnd && computedRowEnd === goal.rowStart) ||
+                      (computedRowStart === goal.rowStart && actualSpan === expectedSpan) ||
+                      (computedRowStart === goal.rowEnd && actualSpan === -expectedSpan); // Handle negative span
+
+        } else if (goal.row !== undefined) {
+          rowMatches = gridRowStart === goal.row;
+        }
+
+        // MATCHING JUSTIFY-SELF and ALIGN-SELF
+        if (goal["justify-self"] !== undefined) {
+          justifyMatches = computedStyle.justifySelf === goal["justify-self"];
+        }
+        if (goal["align-self"] !== undefined) {
+          alignMatches = computedStyle.alignSelf === goal["align-self"];
+        }
+
+        if(level >= 1 && level <= 6) return typeMatches && colMatches && rowMatches;
+
+        if(level >= 7 && level <= 10) {
+            if (level === 10 && goal.type === 'dolphin') {
+                 return typeMatches && alignMatches;
+            }
+            return typeMatches && justifyMatches && alignMatches;
+        }
+
+        // Default check for item goals: all relevant properties must match
+        const itemGoalMatch = typeMatches && colMatches && rowMatches && justifyMatches && alignMatches;
+        return itemGoalMatch;
+
+      }); // End of Array.from(movableElements).some()
+    }); // End of currentGoal.every()
+  }
+
 
   // -----------------------------------------------------------------------------
   // Remove any existing retry button to avoid duplicates
