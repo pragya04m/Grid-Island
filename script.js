@@ -20,7 +20,7 @@ const levelData = {
     },
     elements: [
       { type: "red-fish", col: 2, row: 1 },
-      { type: "ocean", col: 2, row: 2 },
+      { type: "ocean", col: 2, row: 2 }
     ],
     goal: [
       { type: "red-fish", col: 2, row: 2 }
@@ -45,10 +45,10 @@ const levelData = {
     },
     elements: [
       { type: "big-fish", col: 1, row: 1 },
-      { type: "ocean", col: 4, row: 3 },
+      { type: "ocean", randomize: true }
     ],
     goal: [
-      { type: "big-fish", col: 4, row: 3 }
+      { type: "big-fish" }
     ]
   },
 
@@ -312,8 +312,10 @@ const rightArrow = document.getElementById("right-arrow");
 
 function updateLevelBox(newLevel) {
     // By Default- on function call (using argument)
-    level = Math.max(minLevel, Math.min(maxLevel, newLevel)); //clamping function-> ensures level remains within the range [minLevel, maxLevel] - check if changing to newLevel possible, then change
+    level = Math.max(minLevel, Math.min(maxLevel, newLevel)); // clamping function-> ensures level remains within the range [minLevel, maxLevel] - check if changing to newLevel possible, then change
     levelDisplay.textContent = `Level ${level}`;
+    // Save the current level to localStorage
+    localStorage.setItem('lastLevel', level.toString());
 }
 
 // Based on Click events
@@ -380,7 +382,27 @@ function createElement(el) {
 }
 // --------------------------------------------------------------------
 
+// Helper to get random unique grid position
+function getRandomGridPosition(colCount, rowCount, excludePositions = []) {
+  let randomCol, randomRow;
+  let isUnique = false;
+  while (!isUnique) {
+    randomCol = Math.floor(Math.random() * colCount) + 1;
+    randomRow = Math.floor(Math.random() * rowCount) + 1;
+    isUnique = true;
+    for (const excludePos of excludePositions) {
+      if (randomCol === excludePos.col && randomRow === excludePos.row) {
+        isUnique = false;
+        break;
+      }
+    }
+  }
+  return { col: randomCol, row: randomRow };
+}
+
+
 function loadNextLevel(newLevel) {
+
   const levelDataForNewLevel = levelData[newLevel];
   if (!levelDataForNewLevel) {
     console.error("Error: No level data found for level:", newLevel);
@@ -425,10 +447,40 @@ function loadNextLevel(newLevel) {
   // Calculate row and column counts from the set grid template using the helper function
   colCount = getGridDimensions(island.style.gridTemplateColumns);
   rowCount = getGridDimensions(island.style.gridTemplateRows);
-  // console.log("Calculated grid dimensions:", { colCount, rowCount });
+
+  // --- Randomize positions for Level 2 ---
+  if (currentLevel === 2) {
+    let initialFishPos = null;
+    let oceanElement = null;
+    let goalFishElement = null;
+
+    // Find initial fish position and ocean element
+    levelData[currentLevel].elements.forEach(el => {
+      if (el.type === "red-fish" || el.type === "big-fish") {
+        initialFishPos = { col: el.col, row: el.row };
+      } else if (el.type === "ocean" && el.randomize) {
+        oceanElement = el;
+      }
+    });
+
+    // Find goal fish element
+    levelData[currentLevel].goal.forEach(goalEl => {
+      if (goalEl.type === "red-fish" || goalEl.type === "big-fish") {
+        goalFishElement = goalEl;
+      }
+    });
+
+    if (oceanElement && goalFishElement && initialFishPos) {
+      const newOceanPos = getRandomGridPosition(colCount, rowCount, [initialFishPos]);
+      oceanElement.col = newOceanPos.col;
+      oceanElement.row = newOceanPos.row;
+      // Goal fish position matches ocean position
+      goalFishElement.col = newOceanPos.col;
+      goalFishElement.row = newOceanPos.row;
+    }
+  }
 
   // --- Dynamically create base grid cell elements ---
-  // console.log("Creating base grid cell elements.");
   for (let row = 1; row <= rowCount; row++) {
     for (let col = 1; col <= colCount; col++) {
       const baseCell = document.createElement('div');
@@ -641,7 +693,7 @@ function applyCSS() {
 
         // Level 13- add ocean and beach
         else if(level===13) {
-          island.appendChild(createCell(col, row)); // Always add the base cell first
+          island.appendChild(createCell(col, row));
 
           if (row === 1 || row === rowCount) { // First and last row for sand
             const sand = document.createElement('div');
@@ -1086,4 +1138,5 @@ const next_button= document.getElementById('next-button');
 next_button.addEventListener("click", checkAnswer);
 
 // main
-loadNextLevel(1);
+const initialLevel = parseInt(localStorage.getItem('lastLevel')) || 1;
+loadNextLevel(initialLevel);
