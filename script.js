@@ -89,31 +89,31 @@ const levelData = {
     code: 
 `#island {
     display: grid;
-    // 5x5 grid layout
+    // 4x4 grid layout
 }
 
 .ocean {
     <input id="css-input-ocean" class="css-input" placeholder="Type your grid CSS property"></input>
 }`,
     gridTemplate: {
-      columns: "repeat(5, 20%)",
-      rows: "repeat(5, 20%)"
+      columns: "repeat(4, 25%)",
+      rows: "repeat(4, 25%)"
     },
     elements: [
-      { type: "red-fish", col: 5, row: 1 },
-      { type: "crab", col: 1, row: 5 },
-      { type: "sand", colStart: 1, colEnd: 6, rowStart: 5, rowEnd: 6 },
-      { type: "ocean", colStart: 5, colEnd: 6, rowStart: 1, rowEnd: 2 }
+      { type: "red-fish", col: 4, row: 1 },
+      { type: "crab", col: 1, row: 4 },
+      { type: "sand", colStart: 1, colEnd: 5, rowStart: 4, rowEnd: 5 },
+      { type: "ocean", colStart: 4, colEnd: 5, rowStart: 1, rowEnd: 2 }
     ],
     goal: [
-      { type: "ocean", colStart: 1, colEnd:6, rowStart: 1, rowEnd: 5 }
+      { type: "ocean", colStart: 1, colEnd:5, rowStart: 1, rowEnd: 4 }
     ]
   },
 
   5: {
     // grid-row: shorthand
     question: "The lighthouse keeper climbed to the top to light the beacon — but the structure is too short!<br>Stretch the lighthouse to stand tall across <b>4 rows- second to last</b>, guiding ships from afar; <b>using a single property!</b>",
-    hint: "'grid-row/column' is a shorthand property that can accept both start and end values at once, separated by a slash. Syntax-<br><i>grid-row: &lt;start-line&gt; / &lt;end-line&gt;</i>",
+    hint: "'grid-row/column' is a shorthand property that can accept both start and end values at once, separated by a slash. Syntax-<br><code><i>grid-row: &lt;start-line&gt; / &lt;end-line&gt;</i></code>",
     code: 
 `#island {
     display: grid;
@@ -168,7 +168,7 @@ const levelData = {
   
   7: {
     // span
-    question: "The clever crab discovered a shortcut — a long sandbar that lets it reach the other side without stepping into the water!<br>Stretch the sandbar using <b>'span'</b> keyword, across exactly <b>3 columns</b> to connect the shorelines.",
+    question: "The clever crab discovered a shortcut — a long sandbar that lets it reach the other side without stepping into the water!<br>Stretch the sandbar using <code><b>'span'</b></code> keyword, across exactly <b>3 columns</b> to connect the shorelines.",
     hint: "'span' lets you directly use <b>desired column/row width</b> instead of defining start and end grid lines.<br>Note: Keep in mind that span only works with <i>positive values.</i><br>Try using span with <i>both 'grid-column' and 'grid-column-start'</i>",
     code: 
     `#island {
@@ -223,7 +223,7 @@ const levelData = {
   9: {
     // grid-area property
     question: "The mighty Coconut Tree wants more room to sway in the tropical breeze! <br>Help it stretch across <b>3 rows</b> and <b>2 columns</b>, starting right at the top-left corner of the island using the <b><code>\'grid-area\'</code></b> property.",
-    hint: "'grid-area' is a shorthand property for specifying an element's position. Syntax-<br><i>grid-area: row-start / column-start / row-end / column-end;</i>",
+    hint: "'grid-area' is a shorthand property for specifying an element's position. Syntax-<br><code><i>grid-area: row-start / column-start / row-end / column-end;</i></code>",
     code: 
 `#island {
     display: grid;
@@ -308,7 +308,7 @@ const levelData = {
   12: {
     // place-self
     question: "Center the lonely seagull in its cell <b>using a single property!</b>",
-    hint: "A shorthand property for positioning cell items is 'place-self'. Syntax-<br><i>place-self: &lt;align-self&gt; &lt;justify-self&gt;</i>",
+    hint: "A shorthand property for positioning cell items is 'place-self'. Syntax-<br><i><code>place-self: &lt;align-self&gt; &lt;justify-self&gt;</code></i>",
     code: 
 `.seagull {
     grid-column: 3;
@@ -355,6 +355,7 @@ const levelData = {
 `.island {
     // 3x3 grid
     <input id="css-input-island" class="css-input" placeholder="Type your grid CSS property"></input>
+}
 
 .dolphin {
     <input id="css-input-dolphin" class="css-input" placeholder="Type your grid CSS property"></input>
@@ -416,15 +417,84 @@ const levelData = {
 `.island {
     <input id="css-input-island" class="css-input" placeholder="Divide the shores"></input>
 }`,
-    gridTemplate: {    },
     elements: [
-      // { type: "ocean", col: 1, row: 1 }
+      { type: "ocean", col: 1, row: 1 }
     ],
     goal: [
       { type: "island", "grid-template-rows":"1fr 2fr 1fr" }
     ]
+  },
+
+  18: {
+    // mixed px, %, fr use
+    // grid-template-columns: 1fr 150px 20%;
+    question: "The lighthouse sits between land and sea — its column must be <b>fixed (150px)</b>, but the land should <b>stretch</b>, and the sea should stay <b>one-fifth of the grid width</b>.<br>Shape the columns according to proportion.</b>",
+    hint: "The lighthouse taked fixed space, but other columns are relative. You can blend <b>different units - both fixed and relative</b> in a single statement.<br>Note: one-fifth is equivalent to 20%.",
+    code: 
+`.island {
+    <input id="css-input-island" class="css-input" placeholder="Divide the shores"></input>
+}`,
+    gridTemplate: {
+      columns: "1fr 1fr 1fr",
+      rows: "1fr"
+    },
+    elements: [
+      { type: "sand", col: 1, row: 1 },
+      { type: "lighthouse", col: 2, row: 1 },
+      { type: "ocean", col: 3, row: 1 },
+    ],
+    goal: [
+      { type: "island", "grid-template-columns":"1fr 150px 20%" }
+    ]
+  },
+
+  19: {
+    // column-gap
+    // column-gap: 2rem;
+    question: "These crabs like to have their territory marked and fortified!<br>Help them build <b>horizontal aisles</b> of width <b>2rem</b> to separate and distance their boundaries.",
+    hint: "Use <b>'column-gap'</b> to add space <i>between columns</i>.",
+    code: 
+  `.island {
+    <input id="css-input-island" class="css-input" placeholder="Add horizontal space"></input>
+  }`,
+    gridTemplate: {
+      columns: "repeat(3, 1fr)",
+      rows: "1fr"
+    },
+    elements: [
+      { type: "crab", colStart: 1, colEnd: 4, rowStart: 1, rowEnd: 2 },
+      { type: "sand", colStart: 1, colEnd: 4, rowStart: 1, rowEnd: 2 }
+    ],
+    goal: [
+      { type: "island", "column-gap": "2rem" }
+    ]
+  },
+
+  20: {
+    // row-gap: 1rem; column-gap: 2rem;
+    question: "Plant a healthy tree grove!<br>Give each tree <b>sunlight space- 2rem (column-gap)</b> and <b>room to grow roots- 1rem (row-gap)</b>.",
+    hint: "Use both <code>row-gap</code> and <code>column-gap</code> for complete grid spacing.<br>Try using shorthand <b>'gap'</b> property to set both at once. Syntax-<br><code><i>gap: &lt;row-gap&gt; &lt;column-gap&gt;;</i></code>",
+    code: 
+  `.island {
+    <input id="css-input-island" class="css-input" placeholder="Add both row and column gaps"></input>
+  }`,
+    gridTemplate: {
+      columns: "repeat(3, 1fr)",
+      rows: "repeat(2, 1fr)"
+    },
+    elements: [
+      { type: "tree", col: 1, row: 1 },
+      { type: "tree", col: 2, row: 1 },
+      { type: "tree", col: 3, row: 1 },
+      { type: "tree", col: 1, row: 2 },
+      { type: "tree", col: 2, row: 2 },
+      { type: "tree", col: 3, row: 2 },
+      { type: "sand", colStart: 1, colEnd: 4, rowStart: 1, rowEnd: 3 },
+    ],
+    goal: [
+      { type: "island", "row-gap": "1rem", "column-gap": "2rem" }
+    ]
   }
-  
 };
 
 
@@ -565,6 +635,9 @@ function loadNextLevel(newLevel) {
     island.removeChild(island.firstChild);
   }
 
+  // Reset gap properties to default
+  island.style.gap = "0.18rem";
+
   // Update grid layout from levelData and calculate dimensions
   let colCount = 0;
   let rowCount = 0;
@@ -630,9 +703,17 @@ function loadNextLevel(newLevel) {
   }
 
   // --- Add level-specific elements from levelData ---
+  readdLevelElements(currentLevel);
+
+  // Update win condition
+  currentGoal = levelData[currentLevel].goal;
+  console.log("Current goal set:", currentGoal);
+}
+
+// New helper function to re-add level-specific elements
+function readdLevelElements(currentLevel) {
   if (levelData[currentLevel].elements) {
     levelData[currentLevel].elements.forEach(el => {
-      
       // Special case for tree and lighthouse with spanning
       if ((el.type === "tree" || el.type === "lighthouse") && el.colStart && el.colEnd && el.rowStart && el.rowEnd) {
         const img = document.createElement("img");
@@ -671,10 +752,6 @@ function loadNextLevel(newLevel) {
   } else {
       console.log("No level-specific elements defined in levelData.");
   }
-
-  // Update win condition
-  currentGoal = levelData[currentLevel].goal;
-  console.log("Current goal set:", currentGoal);
 }
 
 // Helper to get grid dimensions from template string
@@ -851,6 +928,7 @@ function applyCSS() {
         }
       }
     }
+    readdLevelElements(level);
   };
 
   Object.entries(inputMap).forEach(([inputId, className]) => {
@@ -1005,40 +1083,62 @@ function checkAnswer() {
           let rowsMatch = true;
           let dimensionsMatch = true;
 
+          // Get total grid dimensions for percentage and fr calculations
+          const totalGridWidth = island.offsetWidth;
+          const totalGridHeight = island.offsetHeight;
+
+          // Helper to calculate oneFrEquivalentPx for a given dimension
+          const calculateOneFrPx = (expectedSizes, totalDimension) => {
+            let totalExpectedFixedPx = 0;
+            let totalExpectedPercentPx = 0;
+            let totalExpectedFrUnits = 0;
+
+            expectedSizes.forEach(size => {
+              if (size.type === 'px') {
+                totalExpectedFixedPx += size.value;
+              } else if (size.type === 'percent') {
+                totalExpectedPercentPx += (size.value / 100) * totalDimension;
+              } else if (size.type === 'fr') {
+                totalExpectedFrUnits += size.value;
+              }
+            });
+
+            const remainingSpaceForFr = totalDimension - totalExpectedFixedPx - totalExpectedPercentPx;
+            return totalExpectedFrUnits > 0 ? remainingSpaceForFr / totalExpectedFrUnits : 0;
+          };
+
           // Check columns if specified in goal
           if (goal["grid-template-columns"]) {
               const computedColumns = getCellSizesNumeric(computedStyle.gridTemplateColumns);
               const expectedColumnsSizes = getCellSizesNumeric(goal["grid-template-columns"]);
 
               dimensionsMatch = computedColumns.length === expectedColumnsSizes.length;
-              columnsMatch = dimensionsMatch && computedColumns.every((size, index) => {
-                const expected = expectedColumnsSizes[index];
-                // Exceptional case- If expected is fr and computed is px, compare the px value should be equal
-                if (expected.type === 'fr' && size.type === 'px') {
-                    let oneFrEquivalentPx = 0;
-                    let foundBaseFr = false;
-                    for (let i = 0; i < expectedColumnsSizes.length; i++) {
-                        if (expectedColumnsSizes[i].type === 'fr' && computedColumns[i].type === 'px' && expectedColumnsSizes[i].value !== 0) {
-                            oneFrEquivalentPx = computedColumns[i].value / expectedColumnsSizes[i].value;
-                            foundBaseFr = true;
-                            break;
-                        }
+              if (dimensionsMatch) {
+                const oneFrPxColumns = calculateOneFrPx(expectedColumnsSizes, totalGridWidth);
+
+                columnsMatch = computedColumns.every((size, index) => {
+                  const expected = expectedColumnsSizes[index];
+
+                  if (expected.type === 'fr') {
+                    const diff = Math.abs(size.value - (expected.value * oneFrPxColumns));
+                    return diff < 10;
+                  } 
+                  else if (expected.type === 'px') {
+                    const diff = Math.abs(size.value - expected.value);
+                    return diff < 1;
+                  } 
+                  else if (expected.type === 'percent') {
+                    // Check if computed value is px (as it will be after browser rendering)
+                    if (size.type === 'px') {
+                      const expectedPxFromPercent = (expected.value / 100) * totalGridWidth;
+                      const diff = Math.abs(size.value - expectedPxFromPercent);
+                      return diff < 10;
                     }
-                    if (!foundBaseFr) return false;
-                    return Math.abs(size.value - (expected.value * oneFrEquivalentPx)) < 1; // Tolerance of 1px
-                }
-                // Normal case- Comparison for matching unit types (px, fr, auto, percent)
-                if (expected.type === 'px') {
-                  return Math.abs(size.value - expected.value) < 0.5;
-                } else if (expected.type === 'fr') {
-                  return size.type === 'fr' && Math.abs(size.value - expected.value) < 0.01;
-                } else if (expected.type === 'auto') {
-                  return size.type === 'auto';
-                } else if (expected.type === 'percent') {
-                  return size.type === 'percent' && Math.abs(size.value - expected.value) < 0.01;
-                }
-                return false;
-              });
+                    return false;
+                  }
+                  return false;
+                });
+              }
           }
 
           // Check rows if specified in goal
@@ -1047,40 +1147,35 @@ function checkAnswer() {
               const expectedRowsSizes = getCellSizesNumeric(goal["grid-template-rows"]);
 
               // row count should also match the already checked column dimensionsMatch, if column exists
-              dimensionsMatch = (goal["grid-template-columns"]) 
+              dimensionsMatch = (goal["grid-template-columns"])
                   ? (dimensionsMatch && (computedRows.length === expectedRowsSizes.length))
                   : (computedRows.length === expectedRowsSizes.length);
 
-              rowsMatch = dimensionsMatch && computedRows.every((size, index) => {
-                const expected = expectedRowsSizes[index];
+              if (dimensionsMatch) {
+                const oneFrPxRows = calculateOneFrPx(expectedRowsSizes, totalGridHeight);
 
-                // Exceptional case
-                if (expected.type === 'fr' && size.type === 'px') {
-                    let oneFrEquivalentPx = 0;
-                    let foundBaseFr = false;
-                    for (let i = 0; i < expectedRowsSizes.length; i++) {
-                        if (expectedRowsSizes[i].type === 'fr' && computedRows[i].type === 'px' && expectedRowsSizes[i].value !== 0) {
-                            oneFrEquivalentPx = computedRows[i].value / expectedRowsSizes[i].value;
-                            foundBaseFr = true;
-                            break;
-                        }
+                rowsMatch = computedRows.every((size, index) => {
+                  const expected = expectedRowsSizes[index];
+
+                  if (expected.type === 'fr') {
+                    const diff = Math.abs(size.value - (expected.value * oneFrPxRows));
+                    return diff < 10;
+                  } 
+                  else if (expected.type === 'px') {
+                    const diff = Math.abs(size.value - expected.value);
+                    return diff < 1;
+                  } 
+                  else if (expected.type === 'percent') {
+                    if (size.type === 'px') {
+                      const expectedPxFromPercent = (expected.value / 100) * totalGridHeight;
+                      const diff = Math.abs(size.value - expectedPxFromPercent);
+                      return diff < 10;
                     }
-                    if (!foundBaseFr) return false;
-
-                    return Math.abs(size.value - (expected.value * oneFrEquivalentPx)) < 1;
-                }
-                // Normal case
-                if (expected.type === 'px') {
-                  return Math.abs(size.value - expected.value) < 0.5;
-                } else if (expected.type === 'fr') {
-                  return size.type === 'fr' && Math.abs(size.value - expected.value) < 0.01;
-                } else if (expected.type === 'auto') {
-                  return size.type === 'auto';
-                } else if (expected.type === 'percent') {
-                  return size.type === 'percent' && Math.abs(size.value - expected.value) < 0.01;
-                }
-                return false;
-              });
+                    return false;
+                  }
+                  return false;
+                });
+              }
           }
 
           // Return true only if all specified dimensions match
@@ -1115,6 +1210,44 @@ function checkAnswer() {
           }
 
           return justifyItemsMatch && alignItemsMatch && placeItemsMatch;
+        }
+
+        // checking gap properties (column-gap, row-gap, gap)
+        if (goal["column-gap"] || goal["row-gap"] || goal["gap"]) {
+          let columnGapMatch = true;
+          let rowGapMatch = true;
+          let gapMatch = true;
+
+          // Helper function to convert rem to pixels (assuming 1rem = 16px)
+          const remToPx = (rem) => parseFloat(rem) * 16;
+
+          // Helper function to normalize gap values
+          const normalizeGapValue = (value) => {
+            if (value.includes('rem')) {
+              return remToPx(value);
+            }
+            return parseFloat(value);
+          };
+
+          if (goal["column-gap"]) {
+            const computedValue = normalizeGapValue(computedStyle.columnGap);
+            const goalValue = normalizeGapValue(goal["column-gap"]);
+            columnGapMatch = Math.abs(computedValue - goalValue) < 1;
+          }
+
+          if (goal["row-gap"]) {
+            const computedValue = normalizeGapValue(computedStyle.rowGap);
+            const goalValue = normalizeGapValue(goal["row-gap"]);
+            rowGapMatch = Math.abs(computedValue - goalValue) < 1;
+          }
+
+          if (goal["gap"]) {
+            const computedValue = normalizeGapValue(computedStyle.gap);
+            const goalValue = normalizeGapValue(goal["gap"]);
+            gapMatch = Math.abs(computedValue - goalValue) < 1;
+          }
+
+          return columnGapMatch && rowGapMatch && gapMatch;
         }
       }
 
@@ -1262,7 +1395,8 @@ function checkAnswer() {
   if (existingRetry) existingRetry.remove();
 
   if (isCorrect) {
-    // Special animation for Level 1 - red fish grows after eating small fish
+    // SPECIAL ANIMATIONS: LEVEL-WISE
+
     if (level === 1) {
       const redFish = island.querySelector('.red-fish');
       if (redFish) {
@@ -1284,7 +1418,7 @@ function checkAnswer() {
             level = Math.min(maxLevel, level + 1);
             loadNextLevel(level);
           }, 1600);
-        }, 600); // Wait for fish animation to complete
+        }, 600); // Wait for animation to complete
         return;
       }
     } 
@@ -1295,7 +1429,7 @@ function checkAnswer() {
         redFish.offsetHeight; // Force reflow
         redFish.style.transition = 'grid-column 2s ease-in-out, grid-row 2s ease-in-out';
         redFish.style.gridColumn = '1';
-        redFish.style.gridRow = '4';
+        redFish.style.gridRow = '3';
 
         setTimeout(() => {
           title.textContent = "Your answer is Correct!";

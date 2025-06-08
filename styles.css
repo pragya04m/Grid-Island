@@ -309,7 +309,6 @@ code {
 
 #hint-message b {
     color: var(--primary-blue);
-    font-style: italic;
 }
 
 #hint-message i {
@@ -494,8 +493,8 @@ input {
 }
 
 .cell img {
-    max-width: 80%;
-    max-height: 80%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
     user-select: none;
     pointer-events: none;
