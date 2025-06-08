@@ -4,7 +4,8 @@ const levelData = {
 
   1: {
     // grid-row property
-    question: "Save the fish from dying. <br>Use grid properties to <b>move the fish</b> to water cell.",
+    question: "The big fishes gets hungry quick. <br>Use grid properties to <b>move the red fish</b> to eat the small fish.",
+    hint: "The red fish is a grid item. You need to use the <b>'grid-row'</b> property to move it.",
     code: 
 `#island {
     display: grid;
@@ -20,6 +21,7 @@ const levelData = {
     },
     elements: [
       { type: "red-fish", col: 2, row: 1 },
+      { type: "small-fish", col: 2, row: 2 },
       { type: "ocean", col: 2, row: 2 }
     ],
     goal: [
@@ -30,6 +32,7 @@ const levelData = {
   2: {
     // grid-column, grid-row properties
     question: "Save the fish from dying. <br>Use grid properties to <b>move the fish</b> to water cell.",
+    hint: "Use both <b>'grid-row'</b> and <b>'grid-column'</b> properties to move the fish across grid to the desired cell.",
     code: 
 `#island {
     display: grid;
@@ -53,8 +56,9 @@ const levelData = {
   },
 
   3: {
-    // grid-column-start, grid-column-end
-    question: "Too many fish, not enough splash! <br>Expand the ocean just enough to fit them all — <b>no more, no less!</b>",
+    // grid-column-start, grid-column-end- exclusive
+    question: "Too many fishes, not enough splash! <br>Expand the ocean just enough to fit them all — <b>no more, no less!</b>",
+    hint: "'grid-column-end' value is <b>exclusive</b> w.r.t. cells (occupies 1 less) - <br>because start and end actually counts grid lines, not cells",
     code: 
 `#island {
     display: grid;
@@ -77,45 +81,131 @@ const levelData = {
     goal: [
       { type: "ocean", colStart: 1, colEnd:4, row: 1 }
     ]
-    // trick: grid-column-end value is exclusive (takes 1 minus)
-    // bonus info: try giving it a negative value. you can give grid-column-start and grid-column-end negative values by count grid lines from the right instead of the left (based at first grid line from the right)
   },
-
+  
   4: {
-    question: "The mighty Coconut Tree wants more room to sway in the tropical breeze! <br>Help it stretch across <b>3 rows</b> and <b>2 columns</b>, starting right at the top-left corner of the island using the <b><code>\'grid-area\'</code></b> property.",
+    // grid-column-start + grid-row-end: diagonal- normal
+    question: "The fish needs to swim diagonally across a current that flows from <b>top-right to bottom-left</b>.<br>Use start and end grid lines to stretch the ocean diagonally, but pay attention! <b>Don't let the crab bite the fish.</b>",
     code: 
 `#island {
     display: grid;
     // 5x5 grid layout
 }
 
-.tree {
-    <input id="css-input-tree" class="css-input" placeholder="grid-column: 1; grid-row:1;"></input>
+.ocean {
+    <input id="css-input-ocean" class="css-input" placeholder="Type your grid CSS property"></input>
 }`,
     gridTemplate: {
       columns: "repeat(5, 20%)",
       rows: "repeat(5, 20%)"
     },
     elements: [
-      { type: "tree", col: 1, row: 1 },
-      { type: "sand", colStart: 1, colEnd: 3, rowStart: 1, rowEnd: 4 }
+      { type: "red-fish", col: 5, row: 1 },
+      { type: "crab", col: 1, row: 5 },
+      { type: "sand", colStart: 1, colEnd: 6, rowStart: 5, rowEnd: 6 },
+      { type: "ocean", colStart: 5, colEnd: 6, rowStart: 1, rowEnd: 2 }
     ],
     goal: [
-      { type: "tree", colStart: 1, colEnd:3, rowStart: 1, rowEnd: 4 }
+      { type: "ocean", colStart: 1, colEnd:6, rowStart: 1, rowEnd: 5 }
     ]
   },
 
   5: {
-    question: "Beach Break! <br>This little crab wants a cozy nap in the shade. Help it crawl to the <b>bottom-right corner of the coconut tree</b>, where the sand is cool and shady.",
+    // grid-row: shorthand
+    question: "The lighthouse keeper climbed to the top to light the beacon — but the structure is too short!<br>Stretch the lighthouse to stand tall across <b>4 rows- second to last</b>, guiding ships from afar; <b>using a single property!</b>",
+    hint: "'grid-row/column' is a shorthand property that can accept both start and end values at once, separated by a slash. Syntax-<br><i>grid-row: &lt;start-line&gt; / &lt;end-line&gt;</i>",
     code: 
-`.tree {
-    grid-column: 1 span 2;
-    grid-row: 1 span 3;
+`#island {
+    display: grid;
+    // 3x3 grid layout
 }
 
-.crab {
-    <input id="css-input-crab" class="css-input" placeholder="grid-column: 5; grid-row:1;"></input>
+.lighthouse {
+    <input id="css-input-lighthouse" class="css-input" placeholder="Type your grid CSS property"></input>
 }`,
+    gridTemplate: {
+      columns: "repeat(5, 1fr)",
+      rows: "repeat(5, 1fr)"
+    },
+    elements: [
+      { type: "lighthouse", colStart: 3, colEnd:4, rowStart: 3, rowEnd: 5 },
+      { type: "sand", colStart: 2, colEnd: 5, rowStart: 4, rowEnd: 6 },
+      { type: "ocean", colStart: 1, colEnd: 2, rowStart: 1, rowEnd: 6 },
+      { type: "ocean", colStart: 5, colEnd: 6, rowStart: 1, rowEnd: 6 },
+      { type: "ocean", colStart: 1, colEnd: 6, rowStart: 1, rowEnd: 4 },
+    ],
+    goal: [
+      { type: "lighthouse", colStart: 3, colEnd:4, rowStart: 2, rowEnd: 6 }
+    ]
+  },
+  
+  6: {
+    // reverse/ end-to-start - negative value
+    // grid-row: -1/-3; grid-column: -1/-4;
+    question: "A reverse ocean current pulls the fish from right, diagonally towards left. They start at the last column and swim <b>3 cells toward the left, 1 cell up.</b>",
+    hint: "Try using a <b>negative value</b>.<br>Count grid lines <i>from the end</i> [right/ bottom] using negative values.<br>(-1 means the very last grid line; -2 means one before it.)",
+    code: 
+`#island {
+    display: grid;
+    // 5x5 grid layout
+}
+
+.ocean {
+    <input id="css-input-ocean" class="css-input" placeholder="Type your grid CSS property"></input>
+}`,
+    gridTemplate: {
+      columns: "repeat(5, 20%)",
+      rows: "repeat(5, 20%)"
+    },
+    elements: [
+      { type: "pufferfish", col: 5, row: 5 },
+      { type: "ocean", colStart: 5, colEnd: 6, rowStart: 5, rowEnd: 6 }
+    ],
+    goal: [
+      { type: "ocean", colStart: 3, colEnd:6, rowStart: 4, rowEnd: 6 }
+    ]
+  },
+  
+  7: {
+    // span
+    question: "The clever crab discovered a shortcut — a long sandbar that lets it reach the other side without stepping into the water!<br>Stretch the sandbar using <b>'span'</b> keyword, across exactly <b>3 columns</b> to connect the shorelines.",
+    hint: "'span' lets you directly use <b>desired column/row width</b> instead of defining start and end grid lines.<br>Note: Keep in mind that span only works with <i>positive values.</i><br>Try using span with <i>both 'grid-column' and 'grid-column-start'</i>",
+    code: 
+    `#island {
+      display: grid;
+      // 5x3 grid layout
+      }
+      
+      .sand {
+        <input id="css-input-sand" class="css-input" placeholder="Use span"></input>
+        }`,
+        gridTemplate: {
+      columns: "repeat(5, 20%)",
+      rows: "repeat(3, 1fr)"
+    },
+    elements: [
+      { type: "crab", col: 2, row: 2 },
+      { type: "ocean", col: 1, row: 2 },
+      { type: "ocean", col: 5, row: 2 },
+      { type: "sand", col: 2, row: 2 }
+    ],
+    goal: [
+      { type: "sand", colStart: 2, colEnd: 5, row: 2 }
+    ]
+  },
+  
+  8: {
+    // random easy
+    question: "Beach Break! <br>This little crab wants a cozy nap in the shade. Help it crawl to the <b>bottom-right corner of the coconut tree</b>, where the sand is cool and shady.",
+    code: 
+  `.tree {
+    grid-column: 1 span 2;
+    grid-row: 1 span 3;
+  }
+  
+  .crab {
+    <input id="css-input-crab" class="css-input" placeholder="grid-column: 5; grid-row:1;"></input>
+  }`,
     gridTemplate: {
       columns: "repeat(5, 20%)",
       rows: "repeat(5, 20%)"
@@ -130,8 +220,36 @@ const levelData = {
     ]
   },
 
-  6: {
+  9: {
+    // grid-area property
+    question: "The mighty Coconut Tree wants more room to sway in the tropical breeze! <br>Help it stretch across <b>3 rows</b> and <b>2 columns</b>, starting right at the top-left corner of the island using the <b><code>\'grid-area\'</code></b> property.",
+    hint: "'grid-area' is a shorthand property for specifying an element's position. Syntax-<br><i>grid-area: row-start / column-start / row-end / column-end;</i>",
+    code: 
+`#island {
+    display: grid;
+    // 5x5 grid layout
+}
+
+.tree {
+  <input id="css-input-tree" class="css-input" placeholder="grid-column: 1; grid-row:1;"></input>
+}`,
+    gridTemplate: {
+      columns: "repeat(5, 20%)",
+      rows: "repeat(5, 20%)"
+    },
+    elements: [
+      { type: "tree", col: 1, row: 1 },
+      { type: "sand", colStart: 1, colEnd: 3, rowStart: 1, rowEnd: 4 }
+    ],
+    goal: [
+      { type: "tree", colStart: 1, colEnd:3, rowStart: 1, rowEnd: 4 }
+    ]
+  },
+
+  10: {
+    // start greater than end
     question: "Too many fish, not enough splash! <br>Expand the ocean just enough to fit them all — <b>no more, no less!</b>",
+    hint: "'grid-row-start' can take a value <b>greater</b> than 'grid-column-end'<br><i>(or even a negative value!)</i>",
     code: 
 `.fish {
     grid-row: 2 / span 3;
@@ -155,8 +273,10 @@ const levelData = {
     ]
   },
 
-  7: {
+  11: {
+    // position properties- justify-self
     question: "Operation Side Swipe! <br>The sneaky crabs are creeping closer to the peaceful yellow fishes. <br>Move the <b>yellow fishes to the far left</b> of their ocean zone and <b>crabs to the far right</b> to avoid a clash!",
+    hint: "Aligning elements within their cell requires positioning properties: <b>'justify-self'</b> (along inline-axis) and <b>'align-self'</b> (along block-axis).",
     code: 
 `.crab {
     grid-column: 4;
@@ -185,8 +305,10 @@ const levelData = {
     ]
   },
 
-  8: {
+  12: {
+    // place-self
     question: "Center the lonely seagull in its cell <b>using a single property!</b>",
+    hint: "A shorthand property for positioning cell items is 'place-self'. Syntax-<br><i>place-self: &lt;align-self&gt; &lt;justify-self&gt;</i>",
     code: 
 `.seagull {
     grid-column: 3;
@@ -205,8 +327,9 @@ const levelData = {
     ]
   },
 
-  9: {
+  13: {
     question: "The ocean breeze suddenly shifts!</b><br>Our peacefully perched seagull, must now <b>huddle in the bottom-right corner</b> to stay safe from the gusts.<br><i>Note: Looks familiar? Then look carefully.</i>",
+    hint: "Align the seagull within its cell at the bottom-right (end) corner.",
     code: 
 `.island {
     grid-template-columns: repeat(3, 1fr);
@@ -225,7 +348,8 @@ const levelData = {
     ]
   },
 
-  10: {
+  14: {
+    // stretch
     question: "The dolphins are practicing synchronized yoga. <br><b>Stretch them vertically</b> across their cells.",
     code: 
 `.island {
@@ -249,13 +373,14 @@ const levelData = {
     ]
   },
 
-  11: {
+  15: {
+    // grid-template properties- absolute px
     question: "The island needs reshaping to plan coconut tree planting. <br>Set the grid to be <b>3 columns, each 200px wide</b>, and <b>2 rows, each 300px tall</b>.",
+    hint: "Re-define grid number of rows and columns using <b>'grid-template-rows'</b> and <b>'grid-template-columns'</b>.<br>Bonus: Try using <i>'repeat'</i> keyword to shorten the code.",
     code: 
 `.island {
     <input id="css-input-island" class="css-input" placeholder="Make columns and rows"></input>
 }`,
-    // gridTemplate: {},
     elements: [
       { type: "sand", col: 1, row: 1 },
       { type: "tree", col: 1, row: 1 }
@@ -265,8 +390,10 @@ const levelData = {
     ]
   },
 
-  12: {
+  16: {
+    // percentage, fr
     question: "The villagers are setting up fish market by the shore. Two stalls of each fish type were placed side by side — but now the sellers are arguing!<br>Rearrange them into <b>4 equally-spaced neat rows</b>, so each seller gets their own tidy pair!",
+    hint: "Use either <b>percentage</b> or <b>fr</b> (fractional unit) to get equal-sized divisions.<br>(Each fr unit allocates one share of the available space)",
     code: 
 `.island {
     <input id="css-input-island" class="css-input" placeholder="Set up stalls"></input>
@@ -281,20 +408,22 @@ const levelData = {
     ]
   },
 
-  13: {
+  17: {
+    // fr only use
     question: "The ocean wants flexibility.<br>Divide the shore into 3 rows, where the <b>middle rows is twice as wide</b> as the others. Make room for wide water flow in the center!",
+    hint: "Use fr to <b>divide space evenly</b> when divisions are unequal — 1fr 1fr splits it into 2 equal parts, 1fr 2fr gives twice as much space to the second column!",
     code: 
 `.island {
     <input id="css-input-island" class="css-input" placeholder="Divide the shores"></input>
 }`,
     gridTemplate: {    },
     elements: [
-      { type: "ocean", col: 1, row: 1 }
+      // { type: "ocean", col: 1, row: 1 }
     ],
     goal: [
       { type: "island", "grid-template-rows":"1fr 2fr 1fr" }
     ]
-  },
+  }
   
 };
 
@@ -344,7 +473,7 @@ function createElement(el) {
   const { type, col, row } = el;
         
   // Create appropriate element type
-  if (type === "sand" || type === "ocean" || type === "sky" || type === "sun") {
+  if (type === "sand" || type === "ocean") {
     element = document.createElement("div");
   } else {
     element = document.createElement("img");
@@ -353,6 +482,7 @@ function createElement(el) {
     if(type === "red-fish") element.src = "images/red-fish.png";
     if(type === "yellow-fish") element.src = "images/yellow-fish.png";
     if(type === "small-fish") element.src = "images/small-fish.png";
+    if(type === "pufferfish") element.src = "images/pufferfish.png";
     if(type === "crab") element.src = "images/crab.png";
     if(type === "tree") element.src = "images/tree.png";
     if(type === "seagull") element.src = "images/seagull.png";
@@ -418,9 +548,17 @@ function loadNextLevel(newLevel) {
   // Update content-left: question and editor data
   const questionTextElement = document.getElementById("question-text");
   const defaultCodeElement = document.getElementById("default-code");
+  const hintButton = document.getElementById("hint-button");
   
   questionTextElement.innerHTML = levelData[currentLevel].question;
   defaultCodeElement.innerHTML = levelData[currentLevel].code;
+
+  // Show or hide the hint button based on levelData
+  if (levelData[currentLevel].hint) {
+    hintButton.style.display = "flex";
+  } else {
+    hintButton.style.display = "none";
+  }
 
   // --- Clear ALL previous elements from the island ---
   while (island.firstChild) {
@@ -456,7 +594,7 @@ function loadNextLevel(newLevel) {
 
     // Find initial fish position and ocean element
     levelData[currentLevel].elements.forEach(el => {
-      if (el.type === "red-fish" || el.type === "big-fish") {
+      if (el.type === "big-fish") {
         initialFishPos = { col: el.col, row: el.row };
       } else if (el.type === "ocean" && el.randomize) {
         oceanElement = el;
@@ -465,7 +603,7 @@ function loadNextLevel(newLevel) {
 
     // Find goal fish element
     levelData[currentLevel].goal.forEach(goalEl => {
-      if (goalEl.type === "red-fish" || goalEl.type === "big-fish") {
+      if (goalEl.type === "big-fish") {
         goalFishElement = goalEl;
       }
     });
@@ -567,6 +705,7 @@ function applyCSS() {
     'css-input-big-fish': 'big-fish',
     'css-input-red-fish': 'red-fish',
     'css-input-small-fish': 'small-fish',
+    'css-input-pufferfish': 'pufferfish',
     'css-input-sky': 'sky',
     'css-input-sun': 'sun',
     'css-input-seagull': 'seagull',
@@ -624,8 +763,8 @@ function applyCSS() {
     for (let row = 1; row <= rowCount; row++) {
       for (let col = 1; col <= colCount; col++) {
         
-        // For Level 11, add sand and tree to all cells
-        if (level === 11) {
+        // For Level 15, add sand and tree to all cells
+        if (level === 15) {
           const sand = document.createElement('div');
           sand.className = 'sand cell';
           sand.style.gridColumn = col;
@@ -639,17 +778,13 @@ function applyCSS() {
           tree.style.boxShadow = 'none';
           tree.style.gridColumn = col;
           tree.style.gridRow = row;
-          // Explicitly remove these styles as they were re-introduced
-          tree.style.maxWidth = '';
-          tree.style.maxHeight = '';
-          tree.style.objectFit = '';
           
           island.appendChild(sand);
           island.appendChild(tree);
         } 
 
-        // For Level 12, add different fishes in each row - fish market
-        else if (level === 12) {
+        // For Level 16, add different fishes in each row - fish market
+        else if (level === 16) {
           // First create and append the base cell
           island.appendChild(createCell(col, row));
 
@@ -691,8 +826,8 @@ function applyCSS() {
           island.appendChild(fish);
         }
 
-        // Level 13- add ocean and beach
-        else if(level===13) {
+        // Level 17- add ocean and beach
+        else if(level===17) {
           island.appendChild(createCell(col, row));
 
           if (row === 1 || row === rowCount) { // First and last row for sand
@@ -724,7 +859,7 @@ function applyCSS() {
 
     const cssValue = cssInput.value;
     
-    // Special handling for island element (grid container) - Level 11 onwards
+    // Special handling for island element (grid container) - Level 14 onwards
     // Check if grid-template was changed
     if (className === 'island') {
       try {
@@ -778,7 +913,7 @@ function checkAnswer() {
   overlay.classList.remove("hidden");
 
   // Collect all movable elements from DOM (elements that have a goal defined for them)
-  const movableElements = island.querySelectorAll(".yellow-fish, .red-fish, .big-fish, .crab, .small-fish, .tree, .seagull, .dolphin, .lighthouse, .sky, .sun, .ocean, .sand");
+  const movableElements = island.querySelectorAll(".yellow-fish, .red-fish, .big-fish, .crab, .small-fish, .pufferfish, .tree, .seagull, .dolphin, .lighthouse, .sky, .sun, .ocean, .sand");
 
   // Helper function to get cell sizes as numbers
   const getCellSizesNumeric = (template) => {
@@ -987,7 +1122,7 @@ function checkAnswer() {
 
       return Array.from(movableElements).some(el => {
         const computedStyle = window.getComputedStyle(el);
-
+        
         // Get grid position values
         const gridColStart = parseInt(computedStyle.gridColumnStart) || 1;
         const gridColEnd = parseInt(computedStyle.gridColumnEnd) || (gridColStart + 1);
@@ -1008,11 +1143,16 @@ function checkAnswer() {
           let computedColEnd = parseInt(computedStyle.gridColumnEnd);
           let actualSpan = computedColEnd - computedColStart;
 
-          // Convert negative grid lines to positive for comparison if applicable
+          // Convert negative grid lines to positive for comparison
           const islandComputedStyle = window.getComputedStyle(island);
           const currentIslandColCount = getGridDimensions(islandComputedStyle.gridTemplateColumns);
+          const totalColLines = currentIslandColCount + 1; // total number of grid lines for columns
+
+          if (computedColStart < 0) {
+            computedColStart = totalColLines + computedColStart + 1;
+          }
           if (computedColEnd < 0) {
-            computedColEnd = currentIslandColCount + (computedColEnd + 2);
+            computedColEnd = totalColLines + computedColEnd + 1;
           }
 
           // Attempt to handle 'span' keyword in computed style
@@ -1023,12 +1163,21 @@ function checkAnswer() {
                   computedColEnd = computedColStart + actualSpan; // Calculate end based on start and span
               }
           }
+          // Recalculate actualSpan after potential span handling
+          actualSpan = computedColEnd - computedColStart;
 
           // Check if the computed range matches the goal range, considering start/end can be swapped
-          colMatches = (computedColStart === goal.colStart && computedColEnd === goal.colEnd) ||
-                       (computedColStart === goal.colEnd && computedColEnd === goal.colStart) ||
-                       (computedColStart === goal.colStart && actualSpan === expectedSpan) ||
-                       (computedColStart === goal.colEnd && actualSpan === -expectedSpan); // Handle negative span
+          // Normalize computed range (min and max lines)
+          const normalizedComputedColStart = Math.min(computedColStart, computedColEnd);
+          const normalizedComputedColEnd = Math.max(computedColStart, computedColEnd);
+
+          // Normalize goal range
+          const normalizedGoalColStart = Math.min(goal.colStart, goal.colEnd);
+          const normalizedGoalColEnd = Math.max(goal.colStart, goal.colEnd);
+
+          // Check if normalized ranges match
+          colMatches = (normalizedComputedColStart === normalizedGoalColStart) &&
+                       (normalizedComputedColEnd === normalizedGoalColEnd);
 
         } else if (goal.col !== undefined) {
           colMatches = gridColStart === goal.col;
@@ -1041,12 +1190,16 @@ function checkAnswer() {
            let computedRowEnd = parseInt(computedStyle.gridRowEnd);
            let actualSpan = computedRowEnd - computedRowStart;
 
-           // Convert negative grid lines to positive for comparison if applicable
+           // Convert negative grid lines to positive for comparison
            const islandComputedStyle = window.getComputedStyle(island);
            const currentIslandRowCount = getGridDimensions(islandComputedStyle.gridTemplateRows);
+           const totalRowLines = currentIslandRowCount + 1; // total number of grid lines for rows
 
+           if (computedRowStart < 0) {
+             computedRowStart = totalRowLines + computedRowStart + 1;
+           }
            if (computedRowEnd < 0) {
-             computedRowEnd = currentIslandRowCount + (computedRowEnd + 2);
+             computedRowEnd = totalRowLines + computedRowEnd + 1;
            }
 
            // Attempt to handle 'span' keyword in computed style
@@ -1057,12 +1210,21 @@ function checkAnswer() {
                    computedRowEnd = computedRowStart + actualSpan; // Calculate end based on start and span
                }
            }
+           // Recalculate actualSpan after potential span handling
+           actualSpan = computedRowEnd - computedRowStart;
 
           // Check if the computed range matches the goal range, considering start/end can be swapped
-          rowMatches = (computedRowStart === goal.rowStart && computedRowEnd === goal.rowEnd) ||
-                      (computedRowStart === goal.rowEnd && computedRowEnd === goal.rowStart) ||
-                      (computedRowStart === goal.rowStart && actualSpan === expectedSpan) ||
-                      (computedRowStart === goal.rowEnd && actualSpan === -expectedSpan); // Handle negative span
+          // Normalize computed range (min and max lines)
+          const normalizedComputedRowStart = Math.min(computedRowStart, computedRowEnd);
+          const normalizedComputedRowEnd = Math.max(computedRowStart, computedRowEnd);
+
+          // Normalize goal range
+          const normalizedGoalRowStart = Math.min(goal.rowStart, goal.rowEnd);
+          const normalizedGoalRowEnd = Math.max(goal.rowStart, goal.rowEnd);
+
+          // Check if normalized ranges match
+          rowMatches = (normalizedComputedRowStart === normalizedGoalRowStart) &&
+                       (normalizedComputedRowEnd === normalizedGoalRowEnd);
 
         } else if (goal.row !== undefined) {
           rowMatches = gridRowStart === goal.row;
@@ -1076,10 +1238,10 @@ function checkAnswer() {
           alignMatches = computedStyle.alignSelf === goal["align-self"];
         }
 
-        if(level >= 1 && level <= 6) return typeMatches && colMatches && rowMatches;
+        if(level >= 1 && level <= 10) return typeMatches && colMatches && rowMatches;
 
-        if(level >= 7 && level <= 10) {
-            if (level === 10 && goal.type === 'dolphin') {
+        if(level >= 11 && level <= 14) {
+            if (level === 14 && goal.type === 'dolphin') {
                  return typeMatches && alignMatches;
             }
             return typeMatches && justifyMatches && alignMatches;
@@ -1100,16 +1262,95 @@ function checkAnswer() {
   if (existingRetry) existingRetry.remove();
 
   if (isCorrect) {
-    title.textContent= "Your answer is Correct!";
-    message.textContent= "Loading next level...";
+    // Special animation for Level 1 - red fish grows after eating small fish
+    if (level === 1) {
+      const redFish = island.querySelector('.red-fish');
+      if (redFish) {
+        // Force a reflow
+        redFish.offsetHeight;
+        // Now add the transition and transform
+        redFish.style.transition = 'transform 0.5s ease-in-out';
+        redFish.style.transform = 'scale(1.1)';
+        
+        // Wait for animation to complete before showing overlay and loading next level
+        setTimeout(() => {
+          title.textContent = "Your answer is Correct!";
+          message.textContent = "Loading next level...";
+          overlay.classList.remove("hidden");
+          
+          // Load next level after showing overlay
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            level = Math.min(maxLevel, level + 1);
+            loadNextLevel(level);
+          }, 1600);
+        }, 600); // Wait for fish animation to complete
+        return;
+      }
+    } 
 
-    // Load next level after a short delay
+    else if (level === 4) {
+      const redFish = island.querySelector('.red-fish');
+      if (redFish) {
+        redFish.offsetHeight; // Force reflow
+        redFish.style.transition = 'grid-column 2s ease-in-out, grid-row 2s ease-in-out';
+        redFish.style.gridColumn = '1';
+        redFish.style.gridRow = '4';
+
+        setTimeout(() => {
+          title.textContent = "Your answer is Correct!";
+          message.textContent = "Loading next level...";
+          overlay.classList.remove("hidden");
+          
+          setTimeout(() => {
+            overlay.classList.add("hidden");
+            level = Math.min(maxLevel, level + 1);
+            loadNextLevel(level);
+          }, 1000);
+        }, 500); // Wait for fish movement animation to complete
+        return;
+      }
+    }
+
+    else if (level === 6) {
+      const pufferFish = island.querySelector('.pufferfish');
+      if (pufferFish) {
+        pufferFish.offsetHeight; // Force reflow
+        pufferFish.style.transition = 'grid-column 0.3s ease-in-out';
+        pufferFish.style.gridColumn = '3';
+
+        setTimeout(() => {
+          pufferFish.style.transition = 'grid-row 0.3s ease-in-out';
+          pufferFish.style.gridRow = '4';
+
+        setTimeout(() => {
+            title.textContent = "Your answer is Correct!";
+            message.textContent = "Loading next level...";
+            overlay.classList.remove("hidden");
+            
+            setTimeout(() => {
+              overlay.classList.add("hidden");
+              level = Math.min(maxLevel, level + 1);
+              loadNextLevel(level);
+            }, 1000); // Wait for overlay to show, then load next level
+          }, 300); // Wait for row movement animation to complete
+        }, 300); // Wait for column movement animation to complete
+        return;
+      }
+    }
+
+    // Default behavior for other levels
+    title.textContent = "Your answer is Correct!";
+    message.textContent = "Loading next level...";
+    overlay.classList.remove("hidden");
+
     setTimeout(() => {
       overlay.classList.add("hidden");
-      level = Math.min(maxLevel, level + 1); // increment level safely
+      level = Math.min(maxLevel, level + 1);
       loadNextLevel(level);
     }, 1600);
   }
+
   else { // Wrong answer
     title.textContent= "You answer is Incorrect!";
     message.textContent= "";
@@ -1136,6 +1377,24 @@ function checkAnswer() {
 
 const next_button= document.getElementById('next-button');
 next_button.addEventListener("click", checkAnswer);
+
+
+// -------------------------------------------------------------------------------------
+// HINT BUTTON
+const hint_button = document.getElementById('hint-button');
+hint_button.addEventListener("click", () => {
+  const hintDialogue = document.getElementById("hint-dialogue");
+  const hintMessage = document.getElementById("hint-message");
+  const hintCloseButton = document.getElementById("hint-close-button");
+
+  hintMessage.innerHTML = levelData[level].hint || "No hint available for this level.";
+  hintDialogue.classList.remove("hidden");
+
+  hintCloseButton.addEventListener("click", () => {
+    hintDialogue.classList.add("hidden");
+  }, { once: true }); // to remove the listener after it's called
+});
+
 
 // main
 const initialLevel = parseInt(localStorage.getItem('lastLevel')) || 1;

@@ -40,8 +40,10 @@
                     </div>
                     <div class="answer">
                         <div class="code-card">
-                            <!-- <button id="hint-button" class="place-center"><img id="bulb-icon" src="images\hint-bulb.png"/></button> -->
-                            <pre><code id="default-code"></code></pre>
+                            <div class="question-code">
+                                <pre><code id="default-code"></code></pre>
+                                <button id="hint-button" class="place-center"><img id="bulb-icon" src="images/hint-bulb.png"/></button>
+                            </div>
                             <button id="apply-button">Apply</button>
                         </div>
                         <button id="next-button">Next</button>
@@ -61,8 +63,17 @@
 
     </div>
 
-    <!-- LOAD NEXT LEVEL OVERLAY SCREEN -->
+    <!-- HINT DIALOGUE BOX -->
+    <div id="hint-dialogue" class="hidden">
+        <div id="hint-content">
+            <div class="hint-text-container">
+                <span id="hint-title">💡 Hint:</span> <span id="hint-message"></span>
+            </div>
+            <button id="hint-close-button">Close</button>
+        </div>
+    </div>
 
+    <!-- LOAD NEXT LEVEL OVERLAY SCREEN -->
     <div id="overlay" class="hidden">
         <div id="result-card">
             <h2 id="result-title"></h2>

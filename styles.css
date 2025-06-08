@@ -90,7 +90,7 @@ header {
     justify-content: space-between;
     align-items: center;
     max-width: 50vw;
-    /* margin: 0 0; */
+    margin-top: 0.5rem;
     padding: 1rem;
 }
 
@@ -197,6 +197,7 @@ header {
     font-size: 1.2rem;
     color: azure;
     font-family: 'Segoe UI';
+    position: relative;
 }
 
 #question-text b {
@@ -222,28 +223,124 @@ header {
     gap: 1.2rem;
 }
 
+.question-code {
+    display: flex;
+    justify-items: space-evenly;
+    gap: 2rem;
+}
+
 code {
     font-family: monospace;
     font-size: 1.25rem;
 }
 
-/* #hint-button {
-    height: 2rem;
-    width: 2rem;
-    background-color: var(--accent-color);
+#hint-button {
+    height: 2.4rem;
+    width: 2.4rem;
+    background-color: rgba(255, 255, 255, 0.2);
     border-radius: 0.3rem;
     border: none;
-    align-self: end;
-    margin-right: 1.4rem;
+    top: 0.5rem;
+    right: 0.5rem;
+    box-shadow: 0.1rem 0.1rem 0.2rem 0.01rem rgba(25, 38, 85, 0.3);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#hint-button:hover,
+#hint-button:focus {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0.05rem 0.05rem 0.2rem 0.01rem rgba(25, 38, 85, 0.15);
 }
 
 #bulb-icon {
-    height: 1.4rem;
+    height: 1.7rem;
     width: auto;
-} */
+    filter: drop-shadow(0.15rem 0.15rem 0.4rem rgba(0, 0, 0, 0.3));
+    transition: height 0.2s ease, filter 0.2s ease;
+}
+
+#hint-button:hover img {
+    filter: drop-shadow(0.2rem 0.2rem 0.4rem rgba(0, 0, 0, 0.5));
+    height: 1.86rem;
+}
+
+#hint-dialogue {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+#hint-dialogue.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#hint-title {
+    color: #fdcd49;
+    font-weight: bold;
+}
+
+#hint-content {
+    background-color: #03040aea;
+    color: var(--text-color);
+    padding: 2rem 2.9rem;
+    border-radius: 1rem;
+    text-align: center;
+    font-size: 1.4rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-width: 35%;
+}
+
+#hint-message {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+#hint-message b {
+    color: var(--primary-blue);
+    font-style: italic;
+}
+
+#hint-message i {
+    color: var(--primary-blue);
+    font-weight: 450;
+    font-style: normal;
+}
+
+#hint-close-button {
+    background-color: #d91133;
+    box-shadow: 0.125rem 0.125rem 0.2rem 0.01rem rgba(25, 38, 85, 0.35);
+    border-radius: 0.2rem;
+    border: none;
+    width: 6rem;
+    height: 2.2rem;
+    color: var(--text-color);
+    margin: 0.4rem auto;
+    font-size: 1.2rem;
+}
+
+#hint-close-button:hover {
+    cursor: pointer;
+    background-color: #f40a31;
+    box-shadow:2px 2px 5px 1px rgb(0, 0, 0);
+    transform: scale(1.1);
+    transition: transform 0.25s ease-in-out;
+}
+
 
 input {
-    width: 30rem;
+    width: 29rem;
     height: 2rem;
     border: none;
     border-radius: 0.325rem;
@@ -338,6 +435,7 @@ input {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 0.5rem;
 }
 
 .island-container {
@@ -353,8 +451,6 @@ input {
 
 #island {
     display: grid;
-    /* grid-template-columns: repeat(5,1fr);
-    grid-template-rows: repeat(5,1fr); */
     width: 98.6%;
     height: 98.6%;
     gap: 0.18rem;
@@ -435,20 +531,6 @@ input {
     position: relative;
 }
 
-.sky {
-    background-image: url("images/sky.png");
-    background-size: auto 100%;
-    z-index: 1;
-    position: relative;
-}
-
-.sun {
-    background-image: url("images/sun.png");
-    background-size: auto 100%;
-    z-index: 1;
-    position: relative;
-}
-
 .sand:hover,
 .ocean:hover {
     animation-duration: 8s;
@@ -472,7 +554,8 @@ input {
 .small-fish,
 .crab,
 .seagull,
-.dolphin {
+.dolphin,
+.pufferfish {
   transition: transform 0.5s ease;
   z-index: 5;
   position: relative;
@@ -482,7 +565,8 @@ input {
 .big-fish,
 .yellow-fish,
 .small-fish,
-.crab {
+.crab,
+.pufferfish {
     max-height: 85%;
     max-width: 85%;
     height: auto;
@@ -537,6 +621,7 @@ input {
 .tree:hover,
 .seagull:hover,
 .lighthouse:hover,
-.dolphin:hover {
+.dolphin:hover,
+.pufferfish {
     animation: pulseSmall 1.5s ease infinite;
 }
