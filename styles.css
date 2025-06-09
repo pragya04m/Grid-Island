@@ -86,7 +86,7 @@ body {
 /* HEADER */
 
 .content-left {
-    max-width: 750px;
+    width: 680px;
 }
 
 header {
@@ -540,8 +540,8 @@ input {
 
 #grid-container {
     background-color: #2daa9e;
-    width: 41rem;
-    height: 41rem;
+    width: 37rem;
+    height: 37rem;
     border-radius: 0.6rem;
     display: flex;
     justify-content: center;

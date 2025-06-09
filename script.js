@@ -177,14 +177,14 @@ const levelData = {
     question: "The clever crab discovered a shortcut — a long sandbar that lets it reach the other side without stepping into the water!<br>Stretch the sandbar using <code><b>'span'</b></code> keyword, across exactly <b>3 columns</b> to connect the shorelines.",
     hint: "'span' lets you directly use <b>desired column/row width</b> instead of defining start and end grid lines.<br>Note: Keep in mind that span only works with <i>positive values.</i><br>Try using span with <i>both 'grid-column' and 'grid-column-start'</i>",
     code: 
-    `#island {
-      display: grid;
-      // 5x3 grid layout
-      }
-      
-      .sand {
-        <input id="css-input-sand" class="css-input" placeholder="Use span"></input>
-        }`,
+`#island {
+  display: grid;
+  // 5x3 grid layout
+}
+  
+.sand {
+  <input id="css-input-sand" class="css-input" placeholder="Use span"></input>
+}`,
         gridTemplate: {
       columns: "repeat(5, 20%)",
       rows: "repeat(3, 1fr)"
@@ -205,14 +205,14 @@ const levelData = {
     // grid-row: 3; grid-column: 2;
     question: "Beach Break! <br>This little crab wants a cozy nap in the shade. Help it crawl to the <b>bottom-right corner of the coconut tree</b>, where the sand is cool and shady.",
     code: 
-  `.tree {
-    grid-column: 1 span 2;
-    grid-row: 1 span 3;
-  }
-  
-  .crab {
-    <input id="css-input-crab" class="css-input" placeholder="grid-column: 5; grid-row:1;"></input>
-  }`,
+`.tree {
+  grid-column: 1 span 2;
+  grid-row: 1 span 3;
+}
+
+.crab {
+  <input id="css-input-crab" class="css-input" placeholder="grid-column: 5; grid-row:1;"></input>
+}`,
     gridTemplate: {
       columns: "repeat(5, 20%)",
       rows: "repeat(5, 20%)"
