@@ -529,7 +529,7 @@ function completeGame() {
   title.textContent = "🏆 Congratulations!";
   title.style.color = "#6fcb23";
   message.style.color = "white";
-  message.textContent = "You have mastered CSS Grids.";
+  message.innerHTML = "No more stranded elements —<br><b>You have mastered CSS Grids.</b>";
   overlay.classList.remove("hidden");
 
   // Adding Celebrate button
@@ -576,6 +576,16 @@ function completeGame() {
           },
           {
             src: "images/small-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/seagull.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/pufferfish.png",
             width: 32,
             height: 32,
           },
@@ -633,6 +643,16 @@ function completeGame() {
           },
           {
             src: "images/small-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/seagull.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/pufferfish.png",
             width: 32,
             height: 32,
           },
