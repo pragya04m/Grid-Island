@@ -3,13 +3,22 @@ An interactive game to master CSS Grid through fun, story-based challenges.
 
 Grid-Island is an interactive, web-based game designed to help users understand and practice CSS Grid properties through 20 progressively challenging levels, using engaing visual puzzles to provide users a hands-on learning experience on CSS Grid and its various properties, making complex layout concepts intuitive and fun.
 
+
 **Play it now:** https://grid-island.vercel.app/ (Deployed using Vercel)
 
-##Gameplay Preview:
+
+## Gameplay Preview:
+
 ![image](https://github.com/user-attachments/assets/50e7642e-8d3c-4134-9f25-ade66b5be493)
+
 ![image](https://github.com/user-attachments/assets/2877d793-1617-41d4-bcd9-55977d46d196)
+
 ![image](https://github.com/user-attachments/assets/cc6fb042-caf2-42b2-ad56-f83b23e8c699)
+
 ![image](https://github.com/user-attachments/assets/637a21a1-1a64-4d89-8377-f2671fb0f239)
+
+
+
 
 
 
