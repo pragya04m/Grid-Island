@@ -85,6 +85,8 @@ const levelData = {
   
   4: {
     // grid-column-start + grid-row-end: diagonal- normal
+    // grid-column: 1/ 5; grid-row-end: 4;
+    // grid-column: 1/ span 4; grid-row-end: -2;
     question: "The fish needs to swim diagonally across a current that flows from <b>top-right to bottom-left</b>.<br>Use start and end grid lines to stretch the ocean diagonally, but pay attention! <b>Don't let the crab bite the fish.</b>",
     code: 
 `#island {
@@ -112,6 +114,8 @@ const levelData = {
 
   5: {
     // grid-row: shorthand
+    // grid-row: 2/ 6;
+    // grid-row: 2/ span 4;
     question: "The lighthouse keeper climbed to the top to light the beacon — but the structure is too short!<br>Stretch the lighthouse to stand tall across <b>4 rows- second to last</b>, guiding ships from afar; <b>using a single property!</b>",
     hint: "'grid-row/column' is a shorthand property that can accept both start and end values at once, separated by a slash. Syntax-<br><code><i>grid-row: &lt;start-line&gt; / &lt;end-line&gt;</i></code>",
     code: 
@@ -168,6 +172,8 @@ const levelData = {
   
   7: {
     // span
+    // grid-column: 2/ span 3;
+    // grid-column-end: span 3;
     question: "The clever crab discovered a shortcut — a long sandbar that lets it reach the other side without stepping into the water!<br>Stretch the sandbar using <code><b>'span'</b></code> keyword, across exactly <b>3 columns</b> to connect the shorelines.",
     hint: "'span' lets you directly use <b>desired column/row width</b> instead of defining start and end grid lines.<br>Note: Keep in mind that span only works with <i>positive values.</i><br>Try using span with <i>both 'grid-column' and 'grid-column-start'</i>",
     code: 
@@ -196,6 +202,7 @@ const levelData = {
   
   8: {
     // random easy
+    // grid-row: 3; grid-column: 2;
     question: "Beach Break! <br>This little crab wants a cozy nap in the shade. Help it crawl to the <b>bottom-right corner of the coconut tree</b>, where the sand is cool and shady.",
     code: 
   `.tree {
@@ -222,6 +229,7 @@ const levelData = {
 
   9: {
     // grid-area property
+    // grid-area: 1/ 1/ 4/ 3;
     question: "The mighty Coconut Tree wants more room to sway in the tropical breeze! <br>Help it stretch across <b>3 rows</b> and <b>2 columns</b>, starting right at the top-left corner of the island using the <b><code>\'grid-area\'</code></b> property.",
     hint: "'grid-area' is a shorthand property for specifying an element's position. Syntax-<br><code><i>grid-area: row-start / column-start / row-end / column-end;</i></code>",
     code: 
@@ -248,6 +256,8 @@ const levelData = {
 
   10: {
     // start greater than end
+    // grid-row-end: 2;
+    // grid-row-end: -5;
     question: "Too many fish, not enough splash! <br>Expand the ocean just enough to fit them all — <b>no more, no less!</b>",
     hint: "'grid-row-start' can take a value <b>greater</b> than 'grid-column-end'<br><i>(or even a negative value!)</i>",
     code: 
@@ -306,7 +316,8 @@ const levelData = {
   },
 
   12: {
-    // place-self
+    // grid item property *-self
+    // place-self: center;
     question: "Center the lonely seagull in its cell <b>using a single property!</b>",
     hint: "A shorthand property for positioning cell items is 'place-self'. Syntax-<br><i><code>place-self: &lt;align-self&gt; &lt;justify-self&gt;</code></i>",
     code: 
@@ -328,6 +339,8 @@ const levelData = {
   },
 
   13: {
+    // grid container property *-items
+    // place-items: end;
     question: "The ocean breeze suddenly shifts!</b><br>Our peacefully perched seagull, must now <b>huddle in the bottom-right corner</b> to stay safe from the gusts.<br><i>Note: Looks familiar? Then look carefully.</i>",
     hint: "Align the seagull within its cell at the bottom-right (end) corner.",
     code: 
@@ -418,7 +431,7 @@ const levelData = {
     <input id="css-input-island" class="css-input" placeholder="Divide the shores"></input>
 }`,
     elements: [
-      { type: "ocean", col: 1, row: 1 }
+      { type: "sand", col: 1, row: 1 }
     ],
     goal: [
       { type: "island", "grid-template-rows":"1fr 2fr 1fr" }
@@ -606,7 +619,7 @@ function loadNextLevel(newLevel) {
   const levelDataForNewLevel = levelData[newLevel];
   if (!levelDataForNewLevel) {
     console.error("Error: No level data found for level:", newLevel);
-    alert("No more levels!");
+    alert("Level doesn't exist!");
     return;
   }
 
@@ -874,7 +887,7 @@ function applyCSS() {
           fish.style.gridRow = row;
           // Explicitly remove these styles as they were re-introduced
           fish.style.maxWidth = '';
-          fish.style.maxHeight = '';
+          fish.style.maxHeight = '100px';
           fish.style.objectFit = '';
 
           // Assign different fish types based on row number
@@ -1045,348 +1058,323 @@ function checkAnswer() {
 
   let isCorrect;
 
-  if (level === 10) {
-    let islandAlignItemsStretched = false;
-    let dolphinAlignSelfStretched = false;
+  // Check if all goal conditions are satisfied
+  isCorrect = currentGoal.every(goal => {
 
-    const computedIslandStyle = window.getComputedStyle(island);
+    // --- CHECKING GRID CONTAINER ("ISLAND" ELEMENT) GOALS ---
+    if (goal.type === "island") {
+      const computedStyle = window.getComputedStyle(island);
 
-    // Check island's align-items property
-    if (normalizeValue(computedIslandStyle.alignItems) === 'stretch') {
-      islandAlignItemsStretched = true;
+      // checking grid layout properties (grid-template-columns/rows)
+      if (goal["grid-template-columns"] || goal["grid-template-rows"]) {
+
+        let columnsMatch = true;
+        let rowsMatch = true;
+        let dimensionsMatch = true;
+
+        // Get total grid dimensions for percentage and fr calculations
+        const totalGridWidth = island.offsetWidth;
+        const totalGridHeight = island.offsetHeight;
+
+        // Helper to calculate oneFrEquivalentPx for a given dimension
+        const calculateOneFrPx = (expectedSizes, totalDimension) => {
+          let totalExpectedFixedPx = 0;
+          let totalExpectedPercentPx = 0;
+          let totalExpectedFrUnits = 0;
+
+          expectedSizes.forEach(size => {
+            if (size.type === 'px') {
+              totalExpectedFixedPx += size.value;
+            } else if (size.type === 'percent') {
+              totalExpectedPercentPx += (size.value / 100) * totalDimension;
+            } else if (size.type === 'fr') {
+              totalExpectedFrUnits += size.value;
+            }
+          });
+
+          const remainingSpaceForFr = totalDimension - totalExpectedFixedPx - totalExpectedPercentPx;
+          return totalExpectedFrUnits > 0 ? remainingSpaceForFr / totalExpectedFrUnits : 0;
+        };
+
+        // Check columns if specified in goal
+        if (goal["grid-template-columns"]) {
+            const computedColumns = getCellSizesNumeric(computedStyle.gridTemplateColumns);
+            const expectedColumnsSizes = getCellSizesNumeric(goal["grid-template-columns"]);
+
+            dimensionsMatch = computedColumns.length === expectedColumnsSizes.length;
+            if (dimensionsMatch) {
+              const oneFrPxColumns = calculateOneFrPx(expectedColumnsSizes, totalGridWidth);
+
+              columnsMatch = computedColumns.every((size, index) => {
+                const expected = expectedColumnsSizes[index];
+
+                if (expected.type === 'fr') {
+                  const diff = Math.abs(size.value - (expected.value * oneFrPxColumns));
+                  return diff < 10;
+                } 
+                else if (expected.type === 'px') {
+                  const diff = Math.abs(size.value - expected.value);
+                  return diff < 1;
+                } 
+                else if (expected.type === 'percent') {
+                  // Check if computed value is px (as it will be after browser rendering)
+                  if (size.type === 'px') {
+                    const expectedPxFromPercent = (expected.value / 100) * totalGridWidth;
+                    const diff = Math.abs(size.value - expectedPxFromPercent);
+                    return diff < 10;
+                  }
+                  return false;
+                }
+                return false;
+              });
+            }
+        }
+
+        // Check rows if specified in goal
+        if (goal["grid-template-rows"]) {
+            const computedRows = getCellSizesNumeric(computedStyle.gridTemplateRows);
+            const expectedRowsSizes = getCellSizesNumeric(goal["grid-template-rows"]);
+
+            // row count should also match the already checked column dimensionsMatch, if column exists
+            dimensionsMatch = (goal["grid-template-columns"])
+                ? (dimensionsMatch && (computedRows.length === expectedRowsSizes.length))
+                : (computedRows.length === expectedRowsSizes.length);
+
+            if (dimensionsMatch) {
+              const oneFrPxRows = calculateOneFrPx(expectedRowsSizes, totalGridHeight);
+
+              rowsMatch = computedRows.every((size, index) => {
+                const expected = expectedRowsSizes[index];
+
+                if (expected.type === 'fr') {
+                  const diff = Math.abs(size.value - (expected.value * oneFrPxRows));
+                  return diff < 10;
+                } 
+                else if (expected.type === 'px') {
+                  const diff = Math.abs(size.value - expected.value);
+                  return diff < 1;
+                } 
+                else if (expected.type === 'percent') {
+                  if (size.type === 'px') {
+                    const expectedPxFromPercent = (expected.value / 100) * totalGridHeight;
+                    const diff = Math.abs(size.value - expectedPxFromPercent);
+                    return diff < 10;
+                  }
+                  return false;
+                }
+                return false;
+              });
+            }
+        }
+
+        // Return true only if all specified dimensions match
+        return dimensionsMatch && columnsMatch && rowsMatch;
+      }
+
+      // checking other island (position) properties
+      if (goal["justify-items"] || goal["align-items"] || goal["place-items"]) {
+        let justifyItemsMatch = true;
+        let alignItemsMatch = true;
+        let placeItemsMatch = true;
+
+        // Helper function to normalize property values
+        const normalizeValue = (value) => {
+          return value.toLowerCase().trim();
+        };
+
+        if (goal["justify-items"]) {
+          const computedValue = normalizeValue(computedStyle.justifyItems);
+          const goalValue = normalizeValue(goal["justify-items"]);
+          justifyItemsMatch = computedValue === goalValue;
+        }
+        if (goal["align-items"]) {
+          const computedValue = normalizeValue(computedStyle.alignItems);
+          const goalValue = normalizeValue(goal["align-items"]);
+          alignItemsMatch = computedValue === goalValue;
+        }
+        if (goal["place-items"]) {
+          const computedValue = normalizeValue(computedStyle.placeItems);
+          const goalValue = normalizeValue(goal["place-items"]);
+          placeItemsMatch = computedValue === goalValue;
+        }
+
+        return justifyItemsMatch && alignItemsMatch && placeItemsMatch;
+      }
+
+      // checking gap properties (column-gap, row-gap, gap)
+      if (goal["column-gap"] || goal["row-gap"] || goal["gap"]) {
+        let columnGapMatch = true;
+        let rowGapMatch = true;
+        let gapMatch = true;
+
+        // Helper function to convert rem to pixels (assuming 1rem = 16px)
+        const remToPx = (rem) => parseFloat(rem) * 16;
+
+        // Helper function to normalize gap values
+        const normalizeGapValue = (value) => {
+          if (value.includes('rem')) {
+            return remToPx(value);
+          }
+          return parseFloat(value);
+        };
+
+        if (goal["column-gap"]) {
+          const computedValue = normalizeGapValue(computedStyle.columnGap);
+          const goalValue = normalizeGapValue(goal["column-gap"]);
+          columnGapMatch = Math.abs(computedValue - goalValue) < 1;
+        }
+
+        if (goal["row-gap"]) {
+          const computedValue = normalizeGapValue(computedStyle.rowGap);
+          const goalValue = normalizeGapValue(goal["row-gap"]);
+          rowGapMatch = Math.abs(computedValue - goalValue) < 1;
+        }
+
+        if (goal["gap"]) {
+          const computedValue = normalizeGapValue(computedStyle.gap);
+          const goalValue = normalizeGapValue(goal["gap"]);
+          gapMatch = Math.abs(computedValue - goalValue) < 1;
+        }
+
+        return columnGapMatch && rowGapMatch && gapMatch;
+      }
     }
 
-    // Check if any dolphin has align-self: stretch
-    const dolphins = island.querySelectorAll(".dolphin.cell");
-    dolphins.forEach(dolphinEl => {
-      const computedDolphinStyle = window.getComputedStyle(dolphinEl);
-      if (computedDolphinStyle.alignSelf === 'stretch') {
-        dolphinAlignSelfStretched = true;
-      }
-    });
+    // --- HANDLING GRID ITEMS (MOVABLE ELEMENTS) GOALS ---
 
-    isCorrect = islandAlignItemsStretched || dolphinAlignSelfStretched;
+    return Array.from(movableElements).some(el => {
+      const computedStyle = window.getComputedStyle(el);
+      
+      // Get grid position values
+      const gridColStart = parseInt(computedStyle.gridColumnStart) || 1;
+      const gridColEnd = parseInt(computedStyle.gridColumnEnd) || (gridColStart + 1);
+      const gridRowStart = parseInt(computedStyle.gridRowStart) || 1;
+      const gridRowEnd = parseInt(computedStyle.gridRowEnd) || (gridRowStart + 1);
 
-  } else {
+      const typeMatches = el.classList.contains(goal.type);
 
-    // Check if all goal conditions are satisfied
-    isCorrect = currentGoal.every(goal => {
+      let colMatches = true;
+      let rowMatches = true;
+      let justifyMatches = true;
+      let alignMatches = true;
 
-      // --- CHECKING GRID CONTAINER ("ISLAND" ELEMENT) GOALS ---
-      if (goal.type === "island") {
-        const computedStyle = window.getComputedStyle(island);
+      // MATCHING COLUMN
+      if (goal.colStart !== undefined && goal.colEnd !== undefined) {
+        const expectedSpan = goal.colEnd - goal.colStart;
+        let computedColStart = parseInt(computedStyle.gridColumnStart);
+        let computedColEnd = parseInt(computedStyle.gridColumnEnd);
+        let actualSpan = computedColEnd - computedColStart;
 
-        // checking grid layout properties (grid-template-columns/rows)
-        if (goal["grid-template-columns"] || goal["grid-template-rows"]) {
+        // Convert negative grid lines to positive for comparison
+        const islandComputedStyle = window.getComputedStyle(island);
+        const currentIslandColCount = getGridDimensions(islandComputedStyle.gridTemplateColumns);
+        const totalColLines = currentIslandColCount + 1; // total number of grid lines for columns
 
-          let columnsMatch = true;
-          let rowsMatch = true;
-          let dimensionsMatch = true;
-
-          // Get total grid dimensions for percentage and fr calculations
-          const totalGridWidth = island.offsetWidth;
-          const totalGridHeight = island.offsetHeight;
-
-          // Helper to calculate oneFrEquivalentPx for a given dimension
-          const calculateOneFrPx = (expectedSizes, totalDimension) => {
-            let totalExpectedFixedPx = 0;
-            let totalExpectedPercentPx = 0;
-            let totalExpectedFrUnits = 0;
-
-            expectedSizes.forEach(size => {
-              if (size.type === 'px') {
-                totalExpectedFixedPx += size.value;
-              } else if (size.type === 'percent') {
-                totalExpectedPercentPx += (size.value / 100) * totalDimension;
-              } else if (size.type === 'fr') {
-                totalExpectedFrUnits += size.value;
-              }
-            });
-
-            const remainingSpaceForFr = totalDimension - totalExpectedFixedPx - totalExpectedPercentPx;
-            return totalExpectedFrUnits > 0 ? remainingSpaceForFr / totalExpectedFrUnits : 0;
-          };
-
-          // Check columns if specified in goal
-          if (goal["grid-template-columns"]) {
-              const computedColumns = getCellSizesNumeric(computedStyle.gridTemplateColumns);
-              const expectedColumnsSizes = getCellSizesNumeric(goal["grid-template-columns"]);
-
-              dimensionsMatch = computedColumns.length === expectedColumnsSizes.length;
-              if (dimensionsMatch) {
-                const oneFrPxColumns = calculateOneFrPx(expectedColumnsSizes, totalGridWidth);
-
-                columnsMatch = computedColumns.every((size, index) => {
-                  const expected = expectedColumnsSizes[index];
-
-                  if (expected.type === 'fr') {
-                    const diff = Math.abs(size.value - (expected.value * oneFrPxColumns));
-                    return diff < 10;
-                  } 
-                  else if (expected.type === 'px') {
-                    const diff = Math.abs(size.value - expected.value);
-                    return diff < 1;
-                  } 
-                  else if (expected.type === 'percent') {
-                    // Check if computed value is px (as it will be after browser rendering)
-                    if (size.type === 'px') {
-                      const expectedPxFromPercent = (expected.value / 100) * totalGridWidth;
-                      const diff = Math.abs(size.value - expectedPxFromPercent);
-                      return diff < 10;
-                    }
-                    return false;
-                  }
-                  return false;
-                });
-              }
-          }
-
-          // Check rows if specified in goal
-          if (goal["grid-template-rows"]) {
-              const computedRows = getCellSizesNumeric(computedStyle.gridTemplateRows);
-              const expectedRowsSizes = getCellSizesNumeric(goal["grid-template-rows"]);
-
-              // row count should also match the already checked column dimensionsMatch, if column exists
-              dimensionsMatch = (goal["grid-template-columns"])
-                  ? (dimensionsMatch && (computedRows.length === expectedRowsSizes.length))
-                  : (computedRows.length === expectedRowsSizes.length);
-
-              if (dimensionsMatch) {
-                const oneFrPxRows = calculateOneFrPx(expectedRowsSizes, totalGridHeight);
-
-                rowsMatch = computedRows.every((size, index) => {
-                  const expected = expectedRowsSizes[index];
-
-                  if (expected.type === 'fr') {
-                    const diff = Math.abs(size.value - (expected.value * oneFrPxRows));
-                    return diff < 10;
-                  } 
-                  else if (expected.type === 'px') {
-                    const diff = Math.abs(size.value - expected.value);
-                    return diff < 1;
-                  } 
-                  else if (expected.type === 'percent') {
-                    if (size.type === 'px') {
-                      const expectedPxFromPercent = (expected.value / 100) * totalGridHeight;
-                      const diff = Math.abs(size.value - expectedPxFromPercent);
-                      return diff < 10;
-                    }
-                    return false;
-                  }
-                  return false;
-                });
-              }
-          }
-
-          // Return true only if all specified dimensions match
-          return dimensionsMatch && columnsMatch && rowsMatch;
+        if (computedColStart < 0) {
+          computedColStart = totalColLines + computedColStart + 1;
+        }
+        if (computedColEnd < 0) {
+          computedColEnd = totalColLines + computedColEnd + 1;
         }
 
-        // checking other island (position) properties
-        if (goal["justify-items"] || goal["align-items"] || goal["place-items"]) {
-          let justifyItemsMatch = true;
-          let alignItemsMatch = true;
-          let placeItemsMatch = true;
-
-          // Helper function to normalize property values
-          const normalizeValue = (value) => {
-            return value.toLowerCase().trim();
-          };
-
-          if (goal["justify-items"]) {
-            const computedValue = normalizeValue(computedStyle.justifyItems);
-            const goalValue = normalizeValue(goal["justify-items"]);
-            justifyItemsMatch = computedValue === goalValue;
-          }
-          if (goal["align-items"]) {
-            const computedValue = normalizeValue(computedStyle.alignItems);
-            const goalValue = normalizeValue(goal["align-items"]);
-            alignItemsMatch = computedValue === goalValue;
-          }
-          if (goal["place-items"]) {
-            const computedValue = normalizeValue(computedStyle.placeItems);
-            const goalValue = normalizeValue(goal["place-items"]);
-            placeItemsMatch = computedValue === goalValue;
-          }
-
-          return justifyItemsMatch && alignItemsMatch && placeItemsMatch;
-        }
-
-        // checking gap properties (column-gap, row-gap, gap)
-        if (goal["column-gap"] || goal["row-gap"] || goal["gap"]) {
-          let columnGapMatch = true;
-          let rowGapMatch = true;
-          let gapMatch = true;
-
-          // Helper function to convert rem to pixels (assuming 1rem = 16px)
-          const remToPx = (rem) => parseFloat(rem) * 16;
-
-          // Helper function to normalize gap values
-          const normalizeGapValue = (value) => {
-            if (value.includes('rem')) {
-              return remToPx(value);
+        // Attempt to handle 'span' keyword in computed style
+        if (isNaN(computedColEnd)) {
+            const spanMatch = computedStyle.gridColumnEnd.match(/span\s*(\d+)/);
+            if (spanMatch) {
+                actualSpan = parseInt(spanMatch[1]);
+                computedColEnd = computedColStart + actualSpan; // Calculate end based on start and span
             }
-            return parseFloat(value);
-          };
-
-          if (goal["column-gap"]) {
-            const computedValue = normalizeGapValue(computedStyle.columnGap);
-            const goalValue = normalizeGapValue(goal["column-gap"]);
-            columnGapMatch = Math.abs(computedValue - goalValue) < 1;
-          }
-
-          if (goal["row-gap"]) {
-            const computedValue = normalizeGapValue(computedStyle.rowGap);
-            const goalValue = normalizeGapValue(goal["row-gap"]);
-            rowGapMatch = Math.abs(computedValue - goalValue) < 1;
-          }
-
-          if (goal["gap"]) {
-            const computedValue = normalizeGapValue(computedStyle.gap);
-            const goalValue = normalizeGapValue(goal["gap"]);
-            gapMatch = Math.abs(computedValue - goalValue) < 1;
-          }
-
-          return columnGapMatch && rowGapMatch && gapMatch;
         }
+        // Recalculate actualSpan after potential span handling
+        actualSpan = computedColEnd - computedColStart;
+
+        // Check if the computed range matches the goal range, considering start/end can be swapped
+        // Normalize computed range (min and max lines)
+        const normalizedComputedColStart = Math.min(computedColStart, computedColEnd);
+        const normalizedComputedColEnd = Math.max(computedColStart, computedColEnd);
+
+        // Normalize goal range
+        const normalizedGoalColStart = Math.min(goal.colStart, goal.colEnd);
+        const normalizedGoalColEnd = Math.max(goal.colStart, goal.colEnd);
+
+        // Check if normalized ranges match
+        colMatches = (normalizedComputedColStart === normalizedGoalColStart) &&
+                     (normalizedComputedColEnd === normalizedGoalColEnd);
+
+      } else if (goal.col !== undefined) {
+        colMatches = gridColStart === goal.col;
       }
 
-      // --- HANDLING GRID ITEMS (MOVABLE ELEMENTS) GOALS ---
+      // MATCHING ROW
+      if (goal.rowStart !== undefined && goal.rowEnd !== undefined) {
+         const expectedSpan = goal.rowEnd - goal.rowStart;
+         let computedRowStart = parseInt(computedStyle.gridRowStart);
+         let computedRowEnd = parseInt(computedStyle.gridRowEnd);
+         let actualSpan = computedRowEnd - computedRowStart;
 
-      return Array.from(movableElements).some(el => {
-        const computedStyle = window.getComputedStyle(el);
-        
-        // Get grid position values
-        const gridColStart = parseInt(computedStyle.gridColumnStart) || 1;
-        const gridColEnd = parseInt(computedStyle.gridColumnEnd) || (gridColStart + 1);
-        const gridRowStart = parseInt(computedStyle.gridRowStart) || 1;
-        const gridRowEnd = parseInt(computedStyle.gridRowEnd) || (gridRowStart + 1);
+         // Convert negative grid lines to positive for comparison
+         const islandComputedStyle = window.getComputedStyle(island);
+         const currentIslandRowCount = getGridDimensions(islandComputedStyle.gridTemplateRows);
+         const totalRowLines = currentIslandRowCount + 1; // total number of grid lines for rows
 
-        const typeMatches = el.classList.contains(goal.type);
+         if (computedRowStart < 0) {
+           computedRowStart = totalRowLines + computedRowStart + 1;
+         }
+         if (computedRowEnd < 0) {
+           computedRowEnd = totalRowLines + computedRowEnd + 1;
+         }
 
-        let colMatches = true;
-        let rowMatches = true;
-        let justifyMatches = true;
-        let alignMatches = true;
+         // Attempt to handle 'span' keyword in computed style
+         if (isNaN(computedRowEnd)) {
+             const spanMatch = computedStyle.gridRowEnd.match(/span\s*(\d+)/);
+             if (spanMatch) {
+                 actualSpan = parseInt(spanMatch[1]);
+                 computedRowEnd = computedRowStart + actualSpan; // Calculate end based on start and span
+             }
+         }
+         // Recalculate actualSpan after potential span handling
+         actualSpan = computedRowEnd - computedRowStart;
 
-        // MATCHING COLUMN
-        if (goal.colStart !== undefined && goal.colEnd !== undefined) {
-          const expectedSpan = goal.colEnd - goal.colStart;
-          let computedColStart = parseInt(computedStyle.gridColumnStart);
-          let computedColEnd = parseInt(computedStyle.gridColumnEnd);
-          let actualSpan = computedColEnd - computedColStart;
+        // Check if the computed range matches the goal range, considering start/end can be swapped
+        // Normalize computed range (min and max lines)
+        const normalizedComputedRowStart = Math.min(computedRowStart, computedRowEnd);
+        const normalizedComputedRowEnd = Math.max(computedRowStart, computedRowEnd);
 
-          // Convert negative grid lines to positive for comparison
-          const islandComputedStyle = window.getComputedStyle(island);
-          const currentIslandColCount = getGridDimensions(islandComputedStyle.gridTemplateColumns);
-          const totalColLines = currentIslandColCount + 1; // total number of grid lines for columns
+        // Normalize goal range
+        const normalizedGoalRowStart = Math.min(goal.rowStart, goal.rowEnd);
+        const normalizedGoalRowEnd = Math.max(goal.rowStart, goal.rowEnd);
 
-          if (computedColStart < 0) {
-            computedColStart = totalColLines + computedColStart + 1;
+        // Check if normalized ranges match
+        rowMatches = (normalizedComputedRowStart === normalizedGoalRowStart) &&
+                     (normalizedComputedRowEnd === normalizedGoalRowEnd);
+
+      } else if (goal.row !== undefined) {
+        rowMatches = gridRowStart === goal.row;
+      }
+
+      // MATCHING JUSTIFY-SELF and ALIGN-SELF
+      if (goal["justify-self"] !== undefined) {
+        justifyMatches = computedStyle.justifySelf === goal["justify-self"];
+      }
+      if (goal["align-self"] !== undefined) {
+        alignMatches = computedStyle.alignSelf === goal["align-self"];
+      }
+
+      if(level >= 1 && level <= 10) return typeMatches && colMatches && rowMatches;
+
+      if(level >= 11 && level <= 14) {
+          if (level === 14 && goal.type === 'dolphin') {
+               return typeMatches && alignMatches;
           }
-          if (computedColEnd < 0) {
-            computedColEnd = totalColLines + computedColEnd + 1;
-          }
+          return typeMatches && justifyMatches && alignMatches;
+      }
 
-          // Attempt to handle 'span' keyword in computed style
-          if (isNaN(computedColEnd)) {
-              const spanMatch = computedStyle.gridColumnEnd.match(/span\s*(\d+)/);
-              if (spanMatch) {
-                  actualSpan = parseInt(spanMatch[1]);
-                  computedColEnd = computedColStart + actualSpan; // Calculate end based on start and span
-              }
-          }
-          // Recalculate actualSpan after potential span handling
-          actualSpan = computedColEnd - computedColStart;
+      // Default check for item goals: all relevant properties must match
+      const itemGoalMatch = typeMatches && colMatches && rowMatches && justifyMatches && alignMatches;
+      return itemGoalMatch;
 
-          // Check if the computed range matches the goal range, considering start/end can be swapped
-          // Normalize computed range (min and max lines)
-          const normalizedComputedColStart = Math.min(computedColStart, computedColEnd);
-          const normalizedComputedColEnd = Math.max(computedColStart, computedColEnd);
-
-          // Normalize goal range
-          const normalizedGoalColStart = Math.min(goal.colStart, goal.colEnd);
-          const normalizedGoalColEnd = Math.max(goal.colStart, goal.colEnd);
-
-          // Check if normalized ranges match
-          colMatches = (normalizedComputedColStart === normalizedGoalColStart) &&
-                       (normalizedComputedColEnd === normalizedGoalColEnd);
-
-        } else if (goal.col !== undefined) {
-          colMatches = gridColStart === goal.col;
-        }
-
-        // MATCHING ROW
-        if (goal.rowStart !== undefined && goal.rowEnd !== undefined) {
-           const expectedSpan = goal.rowEnd - goal.rowStart;
-           let computedRowStart = parseInt(computedStyle.gridRowStart);
-           let computedRowEnd = parseInt(computedStyle.gridRowEnd);
-           let actualSpan = computedRowEnd - computedRowStart;
-
-           // Convert negative grid lines to positive for comparison
-           const islandComputedStyle = window.getComputedStyle(island);
-           const currentIslandRowCount = getGridDimensions(islandComputedStyle.gridTemplateRows);
-           const totalRowLines = currentIslandRowCount + 1; // total number of grid lines for rows
-
-           if (computedRowStart < 0) {
-             computedRowStart = totalRowLines + computedRowStart + 1;
-           }
-           if (computedRowEnd < 0) {
-             computedRowEnd = totalRowLines + computedRowEnd + 1;
-           }
-
-           // Attempt to handle 'span' keyword in computed style
-           if (isNaN(computedRowEnd)) {
-               const spanMatch = computedStyle.gridRowEnd.match(/span\s*(\d+)/);
-               if (spanMatch) {
-                   actualSpan = parseInt(spanMatch[1]);
-                   computedRowEnd = computedRowStart + actualSpan; // Calculate end based on start and span
-               }
-           }
-           // Recalculate actualSpan after potential span handling
-           actualSpan = computedRowEnd - computedRowStart;
-
-          // Check if the computed range matches the goal range, considering start/end can be swapped
-          // Normalize computed range (min and max lines)
-          const normalizedComputedRowStart = Math.min(computedRowStart, computedRowEnd);
-          const normalizedComputedRowEnd = Math.max(computedRowStart, computedRowEnd);
-
-          // Normalize goal range
-          const normalizedGoalRowStart = Math.min(goal.rowStart, goal.rowEnd);
-          const normalizedGoalRowEnd = Math.max(goal.rowStart, goal.rowEnd);
-
-          // Check if normalized ranges match
-          rowMatches = (normalizedComputedRowStart === normalizedGoalRowStart) &&
-                       (normalizedComputedRowEnd === normalizedGoalRowEnd);
-
-        } else if (goal.row !== undefined) {
-          rowMatches = gridRowStart === goal.row;
-        }
-
-        // MATCHING JUSTIFY-SELF and ALIGN-SELF
-        if (goal["justify-self"] !== undefined) {
-          justifyMatches = computedStyle.justifySelf === goal["justify-self"];
-        }
-        if (goal["align-self"] !== undefined) {
-          alignMatches = computedStyle.alignSelf === goal["align-self"];
-        }
-
-        if(level >= 1 && level <= 10) return typeMatches && colMatches && rowMatches;
-
-        if(level >= 11 && level <= 14) {
-            if (level === 14 && goal.type === 'dolphin') {
-                 return typeMatches && alignMatches;
-            }
-            return typeMatches && justifyMatches && alignMatches;
-        }
-
-        // Default check for item goals: all relevant properties must match
-        const itemGoalMatch = typeMatches && colMatches && rowMatches && justifyMatches && alignMatches;
-        return itemGoalMatch;
-
-      }); // End of Array.from(movableElements).some()
-    }); // End of currentGoal.every()
-  }
+    }); // End of Array.from(movableElements).some()
+  }); // End of currentGoal.every()
 
 
   // -----------------------------------------------------------------------------
