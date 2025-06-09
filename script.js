@@ -606,7 +606,7 @@ function loadNextLevel(newLevel) {
   const levelDataForNewLevel = levelData[newLevel];
   if (!levelDataForNewLevel) {
     console.error("Error: No level data found for level:", newLevel);
-    alert("Level doesn't exist!");
+    alert("No more levels!");
     return;
   }
 
