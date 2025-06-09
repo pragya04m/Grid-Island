@@ -521,6 +521,157 @@ const levelDisplay = document.getElementById("level-number");
 const leftArrow = document.getElementById("left-arrow");
 const rightArrow = document.getElementById("right-arrow");
 
+function completeGame() {
+  const overlay= document.getElementById("overlay");
+  const title= document.getElementById("result-title");
+  const message= document.getElementById("result-message");
+
+  title.textContent = "🏆 Congratulations!";
+  title.style.color = "#6fcb23";
+  message.style.color = "white";
+  message.textContent = "You have mastered CSS Grids.";
+  overlay.classList.remove("hidden");
+
+  // Adding Celebrate button
+  let celebrateButton= document.createElement("button");
+  celebrateButton.innerText= "Celebrate!";
+  celebrateButton.setAttribute("id","celebrate-button");
+  message.insertAdjacentElement("afterend", celebrateButton);
+
+  celebrateButton.addEventListener("click", () => {
+    // Create a canvas for confetti with high z-index
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '9999';
+    document.body.appendChild(canvas);
+
+    confetti({
+      spread: 360,
+      ticks: 200,
+      gravity: 1,
+      decay: 0.94,
+      startVelocity: 30,
+      particleCount: 100,
+      origin: { x: 0.99, y: 0.6 },
+      scalar: 3,
+      shapes: ["image"],
+      zIndex: 9999,
+      disableForReducedMotion: true,
+      canvas: canvas,
+      shapeOptions: {
+        image: [{
+            src: "images/big-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/red-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/small-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/tree.png",
+            width: 32,
+            height: 70,
+          },
+          {
+            src: "images/crab.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/yellow-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/lighthouse.png",
+            width: 32,
+            height: 70,
+          },
+          {
+            src: "images/dolphin.png",
+            width: 40,
+            height: 40,
+          },
+        ],
+      },
+    });
+    confetti({
+      spread: 360,
+      ticks: 200,
+      gravity: 1,
+      decay: 0.94,
+      startVelocity: 30,
+      particleCount: 100,
+      origin: { x: 0.01, y: 0.6 },
+      scalar: 3,
+      shapes: ["image"],
+      zIndex: 9999,
+      disableForReducedMotion: true,
+      canvas: canvas,
+      shapeOptions: {
+        image: [{
+            src: "images/big-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/red-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/small-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/tree.png",
+            width: 32,
+            height: 70,
+          },
+          {
+            src: "images/crab.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/yellow-fish.png",
+            width: 32,
+            height: 32,
+          },
+          {
+            src: "images/lighthouse.png",
+            width: 32,
+            height: 70,
+          },
+          {
+            src: "images/dolphin.png",
+            width: 40,
+            height: 40,
+          },
+        ],
+      },
+    });
+
+    // Remove canvas after animation completes
+    setTimeout(() => {
+      canvas.remove();
+    }, 5000);
+  });
+}
+
 function updateLevelBox(newLevel) {
     // By Default- on function call (using argument)
     level = Math.max(minLevel, Math.min(maxLevel, newLevel)); // clamping function-> ensures level remains within the range [minLevel, maxLevel] - check if changing to newLevel possible, then change
@@ -531,12 +682,18 @@ function updateLevelBox(newLevel) {
 
 // Based on Click events
 leftArrow.addEventListener("click", () => loadNextLevel(level - 1));
-rightArrow.addEventListener("click", () => loadNextLevel(level + 1));
+rightArrow.addEventListener("click", () => {
+  if(level === 20) completeGame();
+  else loadNextLevel(level + 1);
+});
 
 // Based on Keyboard arrow key events
 document.addEventListener("keydown", (event) => {
   if (event.key === "ArrowLeft") loadNextLevel(level - 1);
-  if (event.key === "ArrowRight") loadNextLevel(level + 1);
+  if (event.key === "ArrowRight") {
+    if(level === 20) completeGame();
+    else loadNextLevel(level + 1);
+  }
 });
 
 

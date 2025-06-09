@@ -82,6 +82,26 @@ body {
     box-shadow:2px 2px 5px 1px rgb(0, 0, 0);
 }
 
+#celebrate-button {
+    background-color: var(--red-accent);
+    box-shadow: 0.125rem 0.125rem 0.2rem 0.01rem rgba(25, 38, 85, 0.35);
+    border-radius: 0.2rem;
+    border: none;
+    width: 10rem;
+    height: 2.4rem;
+    color: var(--text-color);
+    margin: 0.4rem auto;
+    font-size: 1.3rem;
+    font-weight: 800;
+    padding: 0.2rem;
+}
+
+#celebrate-button:hover {
+    cursor: pointer;
+    background-color: #ff8800;
+    box-shadow:2px 2px 5px 1px rgb(0, 0, 0);
+}
+
 
 /* HEADER */
 
