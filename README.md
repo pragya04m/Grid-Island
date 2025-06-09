@@ -35,7 +35,7 @@ a) grid-column shorthands (1 / 4) don’t populate gridColumnStart/gridColumnEnd
 b) Keywords like span 2 and functions like repeat(4, 1fr) are returned as strings, and not handled directly. They need to be parsed and interpreted to incorporate in changing grid layout according to user input.
 Solution: Fallback logic using gridColumn?.split("/") with parseInt for reliability, regex parsing to handle strings.
 
-### 4. Supporting Multiple Valid Inputs
+### 3. Supporting Multiple Valid Inputs
 Challenge: Some levels allow multiple correct answers (e.g. span or start/end equivalents, using grid-column or grid-column-start property, etc). To make the game robust and accurate (especially as a teaching platform), it should allow accepting all plausible answers as correct, not just the one the level intends to teach. Strict matching would penalize valid answers and hurt the learning experience.
 Solution: Built a flexible goal-checking engine to match any semantically correct equivalent, accounting for:
 - span vs. explicit end values
@@ -44,11 +44,11 @@ Solution: Built a flexible goal-checking engine to match any semantically correc
 - negative indexing
 - repeat() vs manual expansion
 
-### 5. Multi-Cell (spanning) Elements Strategy
+### 4. Multi-Cell (spanning) Elements Strategy
 a) Some elements (e.g. tree, ocean) should span multiple cells as a single image.
 b) Others (e.g. sand, fish) should repeat across cells.
 Solution: Differentiated behavior via type-based rendering logic.
 
-### 6. Resetting Grid Layout on Level Switch
+### 5. Resetting Grid Layout on Level Switch
 Challenge: Levels 15 onwards (based on grid-template-* properties) change the grid layout (number and size of rows and columns) using user input, which holds priority over manually defined grid styles in loadNextLevel function, hence they persisted across levels, distorting pre-defined, desired grid layouts in all levels.
 Solution: Completely clear and recreate grid cells and styles on every level load.
