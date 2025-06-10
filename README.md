@@ -1,10 +1,10 @@
 # Grid-Island
 An interactive game to master CSS Grid through fun, story-based challenges.
 
-Grid-Island is an interactive, web-based game designed to help users understand and practice CSS Grid properties through 20 progressively challenging levels, using engaing visual puzzles to provide users a hands-on learning experience on CSS Grid and its various properties, making complex layout concepts intuitive and fun.
+Grid-Island is an interactive, web-based game designed to help users understand and practice CSS Grid properties through 20 progressively challenging levels, using engaing visual puzzles to provide users a hands-on learning experience on CSS Grid and its various properties, making complex layout concepts intuitive and fun.\
 
 
-**Play it now:** https://grid-island.vercel.app/ (Deployed using Vercel)
+**Play it now:** [https://grid-island.vercel.app/](https://grid-island.vercel.app/) (Deployed using Vercel)\
 
 
 ## Gameplay Preview:
@@ -17,11 +17,11 @@ Grid-Island is an interactive, web-based game designed to help users understand 
 
 ![image](https://github.com/user-attachments/assets/637a21a1-1a64-4d89-8377-f2671fb0f239)
 
-![image](https://github.com/user-attachments/assets/104e720a-dd32-423b-9c5f-d7b8c75ef4d4)
-(Responsive Design)
+![image](https://github.com/user-attachments/assets/104e720a-dd32-423b-9c5f-d7b8c75ef4d4)\
+(Responsive Design)\<br/>
 
 
-
+When starting to build this project after first learning JS, here I thought that a simple `getAttribute()`, `setAttribute()`, `.style`, and `.className` will handle the code editor part, but turned out I was very wrong./
 
 ## Some Challenges I faced during development (as a JS learner):
 
@@ -30,13 +30,13 @@ Challenge: Initially I started with trying to hardcode each level's pre and post
 Solution: Built a centralized, data-driven levelData structure to manage all level properties (UI, goal, grid layout, etc.).
 
 ### 2. Dynamic Parsing of Grid Shorthands
-Challenge: 
-a) grid-column shorthands (1 / 4) don’t populate gridColumnStart/gridColumnEnd directly in JS. Handling '/' separated values and providing them to corresponding properties to allow robust goal checking.
-b) Keywords like span 2 and functions like repeat(4, 1fr) are returned as strings, and not handled directly. They need to be parsed and interpreted to incorporate in changing grid layout according to user input.
+Challenge: \
+a) grid-column shorthands (1 / 4) don’t populate gridColumnStart/gridColumnEnd directly in JS. Handling '/' separated values and providing them to corresponding properties to allow robust goal checking.\
+b) Keywords like span 2 and functions like repeat(4, 1fr) are returned as strings, and not handled directly. They need to be parsed and interpreted to incorporate in changing grid layout according to user input.\
 Solution: Fallback logic using gridColumn?.split("/") with parseInt for reliability, regex parsing to handle strings.
 
-### 3. Supporting Multiple Valid Inputs
-Challenge: Some levels allow multiple correct answers (e.g. span or start/end equivalents, using grid-column or grid-column-start property, etc). To make the game robust and accurate (especially as a teaching platform), it should allow accepting all plausible answers as correct, not just the one the level intends to teach. Strict matching would penalize valid answers and hurt the learning experience.
+### 3. Supporting Multiple Valid Inputs\
+Challenge: Some levels allow multiple correct answers (e.g. span or start/end equivalents, using grid-column or grid-column-start property, etc). To make the game robust and accurate (especially as a teaching platform), it should allow accepting all plausible answers as correct, not just the one the level intends to teach. Strict matching would penalize valid answers and hurt the learning experience.\
 Solution: Built a flexible goal-checking engine to match any semantically correct equivalent, accounting for:
 - span vs. explicit end values
 - start > end (reverse direction)
@@ -44,11 +44,11 @@ Solution: Built a flexible goal-checking engine to match any semantically correc
 - negative indexing
 - repeat() vs manual expansion
 
-### 4. Multi-Cell (spanning) Elements Strategy
-a) Some elements (e.g. tree, ocean) should span multiple cells as a single image.
-b) Others (e.g. sand, fish) should repeat across cells.
+### 4. Multi-Cell (spanning) Elements Strategy\
+a) Some elements (e.g. tree, ocean) should span multiple cells as a single image.\
+b) Others (e.g. sand, fish) should repeat across cells.\
 Solution: Differentiated behavior via type-based rendering logic.
 
-### 5. Resetting Grid Layout on Level Switch
-Challenge: Levels 15 onwards (based on grid-template-* properties) change the grid layout (number and size of rows and columns) using user input, which holds priority over manually defined grid styles in loadNextLevel function, hence they persisted across levels, distorting pre-defined, desired grid layouts in all levels.
+### 5. Resetting Grid Layout on Level Switch\
+Challenge: Levels 15 onwards (based on grid-template-* properties) change the grid layout (number and size of rows and columns) using user input, which holds priority over manually defined grid styles in loadNextLevel function, hence they persisted across levels, distorting pre-defined, desired grid layouts in all levels.\
 Solution: Completely clear and recreate grid cells and styles on every level load.
