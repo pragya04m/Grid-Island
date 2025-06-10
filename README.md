@@ -18,8 +18,7 @@ Grid-Island is an interactive, web-based game designed to help users understand 
 ![image](https://github.com/user-attachments/assets/637a21a1-1a64-4d89-8377-f2671fb0f239)
 
 ![image](https://github.com/user-attachments/assets/104e720a-dd32-423b-9c5f-d7b8c75ef4d4)\
-(Responsive Design)\
-\
+(Responsive Design)\  
 
 
 
